@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { createProduct } from "@/lib/firebase";
+import { useState, useEffect } from "react";
+import { createProduct, uploadImage } from "@/lib/firebase";
 
 const AddProduct = () => {
 	const [formValues, setFormValues] = useState({
@@ -14,9 +14,22 @@ const AddProduct = () => {
 		slug: "",
 	});
 
+	const [imageURL, setImageURL] = useState("");
+
+	const getInputValue = (e) => {
+		switch (e.target.type) {
+			case "file":
+				return e.target.files[0];
+			case "checkbox":
+				return e.target.checked;
+			default:
+				return e.target.value;
+		}
+	};
+
 	const handleFormChange = (e) => {
 		const id = e.target.id;
-		const newValue = e.target.type === "checkbox" ? e.target.checked : e.target.value;
+		const newValue = getInputValue(e);
 		const productSlug = formValues.name.toLowerCase().replace(/\s+/g, "-");
 
 		setFormValues({
@@ -26,17 +39,29 @@ const AddProduct = () => {
 		});
 	};
 
-	const handleFormSubmit = (e) => {
+	const handleFormSubmit = async (e) => {
 		e.preventDefault();
 
-		createProduct(formValues)
-			.then(() => {
-				console.log("success!");
-			})
-			.catch((err) => {
-				console.log(err);
-			});
+		const url = await uploadImage(formValues.image);
+		setImageURL(url);
+
+		setFormValues({
+			...formValues,
+			image: url,
+		});
 	};
+
+	useEffect(() => {
+		if (imageURL) {
+			createProduct(formValues)
+				.then(() => {
+					console.log("success!");
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		}
+	}, [imageURL]);
 
 	return (
 		<section className="p-10">
@@ -119,13 +144,15 @@ const AddProduct = () => {
 				<div className="-mx-3 md:flex mb-2">
 					<div className="md:w-2/3 px-3 mb-6 md:mb-0">
 						<label className="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2" htmlFor="image">
-							Image URL
+							Product Image
 						</label>
 						<input
 							className="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4"
-							id="imag"
-							type="text"
+							id="image"
+							name="image"
+							type="file"
 							placeholder=""
+							accept="image/png, image/jpeg"
 							onChange={handleFormChange}
 						/>
 					</div>

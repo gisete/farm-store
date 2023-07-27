@@ -1,6 +1,6 @@
 import Image from "next/image";
-import Products from "./components/Products";
-import Cart from "./components/Cart";
+import Products from "./(shop)/components/Products";
+import Cart from "./(shop)/components/Cart";
 import { getProducts } from "@lib/firebase";
 
 // export async function getServerSideProps() {

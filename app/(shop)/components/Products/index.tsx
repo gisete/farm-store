@@ -7,6 +7,8 @@ type ProductsProps = {
 			name: string;
 			description: string;
 			price: number;
+			unit: string;
+			slug: string;
 		}
 	];
 };
