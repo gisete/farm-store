@@ -25,24 +25,44 @@ const SingleProduct = ({ product }: SingleProductProps) => {
 		subTotal: 0,
 	});
 
-	function checkIfQuantityIsNumber(e: any) {
-		if (isNaN(e.target.value)) {
-			return false;
-		}
+	function isInputValid(e: any) {
+		const value = e.target.value;
+		return value !== "" ? true : false;
+	}
+
+	function productExistsInCart() {
+		return cart.some((item) => item.name === order.name);
 	}
 
 	function handleQuantityChange(e: any) {
-		const canAddToCart = checkIfQuantityIsNumber(e);
+		const canAddToCart = isInputValid(e);
+		const parsedValue = parseFloat(e.target.value.replace(/,/, "."));
 
 		if (canAddToCart)
 			setOrder({
 				...order,
-				quantity: e.target.value,
-				subTotal: order.price * e.target.value,
+				quantity: parsedValue,
+				subTotal: order.price * parsedValue,
 			});
 	}
 
 	function handleAddToCart() {
+		if (productExistsInCart()) {
+			const updatedCart = cart.map((item) => {
+				if (item.name === order.name) {
+					console.log("item", item);
+					console.log("order", order);
+					return {
+						...item,
+						quantity: item.quantity + order.quantity,
+						subTotal: item.subTotal + order.subTotal,
+					};
+				}
+				return item;
+			});
+			setCart(updatedCart);
+			return;
+		}
 		setCart([...cart, order]);
 	}
 
@@ -60,7 +80,7 @@ const SingleProduct = ({ product }: SingleProductProps) => {
 			<form>
 				<div className="mb-6 flex items-center">
 					<input
-						type="text"
+						type={product.unit === "kg" ? "text" : "number"}
 						id="quantity"
 						className="bg-gray-50 border border-gray-300 text-gray-900 text-right text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-16 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mr-2"
 						placeholder="0"
