@@ -1,9 +1,22 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createProduct, uploadImage } from "@/lib/firebase";
+import { createProduct, uploadImage, getCategories } from "@/lib/firebase";
 
-const AddProduct = () => {
+export default function AddProduct() {
+	const [categoryData, setData] = useState([]);
+
+	useEffect(() => {
+		getCategories()
+			.then(({ data }) => {
+				if (!data) return;
+				setData(data);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}, []);
+
 	const [formValues, setFormValues] = useState({
 		name: "",
 		description: "",
@@ -133,7 +146,37 @@ const AddProduct = () => {
 							</div>
 						</div>
 					</div>
-					<div className="md:w-1/3 px-3 flex items-center mt-4">
+					<div className="md:w-1/3 px-3">
+						<label className="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2" htmlFor="category">
+							Category
+						</label>
+						<div className="relative">
+							<select
+								className="block appearance-none w-full bg-grey-lighter border border-grey-lighter text-grey-darker py-3 px-4 pr-8 rounded"
+								id="category"
+								onChange={handleFormChange}
+							>
+								<option value="All">All</option>
+								{categoryData &&
+									categoryData.map((category) => {
+										return (
+											<option key={category.slug} value={category.name}>
+												{category.name}
+											</option>
+										);
+									})}
+							</select>
+							<div className="pointer-events-none absolute top-0 bottom-0 right-0 flex items-center px-2 text-grey-darker">
+								<svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+									<path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+								</svg>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div className="-mx-3 md:flex mb-8">
+					<div className="md:w-1/3 px-3 flex items-center">
 						<input className="" id="lowStock" type="checkbox" name="lowStock" onChange={handleFormChange} />
 						<label className="text-grey-darker pl-2" htmlFor="lowStock">
 							Low Stock
@@ -164,6 +207,4 @@ const AddProduct = () => {
 			</form>
 		</section>
 	);
-};
-
-export default AddProduct;
+}

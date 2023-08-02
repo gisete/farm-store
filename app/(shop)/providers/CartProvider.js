@@ -4,28 +4,7 @@ import { createContext, useState, useEffect } from "react";
 export const CartContext = createContext();
 
 function CartProvider({ children }) {
-	const [cart, setCart] = useState([
-		{
-			name: "Product 1",
-			slug: "product-1",
-			price: 4,
-			quantity: 2,
-			unit: "un",
-			get subTotal() {
-				return this.price * this.quantity;
-			},
-		},
-		{
-			name: "Product 2",
-			slug: "product-2",
-			price: 2,
-			quantity: 5,
-			unit: "un",
-			get subTotal() {
-				return this.price * this.quantity;
-			},
-		},
-	]);
+	const [cart, setCart] = useState([]);
 
 	const [cartTotal, setCartTotal] = useState(0);
 

@@ -2,18 +2,21 @@
 import Image from "next/image";
 
 const CartItem = ({ item }) => {
+	const formattedSubTotal = item.subTotal.toString().replace(".", ",");
+	const formattedQuantity = item.quantity.toString().replace(".", ",");
+
 	return (
-		<li className="flex" key={item.id}>
+		<li className="flex font-mono" key={item.id}>
 			<div className="mr-auto">
 				<p>{item.name}</p>
 				<p>
-					{item.quantity} {item.unit} × €{item.price}
+					{formattedQuantity} {item.unit} × €{item.price}
 				</p>
 			</div>
 
 			<div className="mr-auto">
 				<Image src="/img/icon-x-circle.svg" width={24} height={24} alt="" />
-				<p>{item.subTotal}</p>
+				<p>{formattedSubTotal}</p>
 			</div>
 		</li>
 	);

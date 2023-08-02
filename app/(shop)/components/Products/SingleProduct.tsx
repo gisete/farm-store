@@ -50,8 +50,6 @@ const SingleProduct = ({ product }: SingleProductProps) => {
 		if (productExistsInCart()) {
 			const updatedCart = cart.map((item) => {
 				if (item.name === order.name) {
-					console.log("item", item);
-					console.log("order", order);
 					return {
 						...item,
 						quantity: item.quantity + order.quantity,
@@ -63,6 +61,7 @@ const SingleProduct = ({ product }: SingleProductProps) => {
 			setCart(updatedCart);
 			return;
 		}
+
 		setCart([...cart, order]);
 	}
 
