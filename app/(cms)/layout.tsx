@@ -20,7 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 					</aside>
 
 					<main className="h-screen flex-1 py-8 pr-8">
-						<div className="bg-white px-3 py-12">{children}</div>
+						<div className="bg-white min-h-full px-12 py-16">{children}</div>
 					</main>
 				</div>
 			</body>

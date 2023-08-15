@@ -1,8 +1,20 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Open_Sans, Lato, Lora } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
+
+const open_sans = Open_Sans({
+	weight: ["400", "700"],
+	subsets: ["latin"],
+	variable: "--font-open-sans",
+});
+
+const lato = Lato({
+	weight: ["300", "400", "700"],
+	subsets: ["latin"],
+	variable: "--font-lato",
+});
 
 export const metadata: Metadata = {
 	title: "Create Next App",
@@ -12,7 +24,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
 		<html lang="en">
-			<body className={inter.className}>{children}</body>
+			<body className={`${lato.variable}`}>{children}</body>
 		</html>
 	);
 }

@@ -3,7 +3,7 @@ import ProductsTable from "../components/ProductsTable";
 
 export default function Admin() {
 	return (
-		<section className="p-10">
+		<section>
 			<div className="mb-5">
 				<h1 className="text-2xl">Products</h1>
 			</div>

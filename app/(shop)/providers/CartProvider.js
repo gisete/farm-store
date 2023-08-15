@@ -8,15 +8,43 @@ function CartProvider({ children }) {
 
 	const [cartTotal, setCartTotal] = useState(0);
 
+	function clearCart() {
+		setCart([]);
+		localStorage.removeItem("cart");
+	}
+
+	function deleteFromCart(id) {
+		const newCart = cart.filter((item) => item.id !== id);
+
+		if (newCart.length < 1) {
+			clearCart();
+		} else {
+			setCart(newCart);
+		}
+	}
+
 	useEffect(() => {
 		const cartTotal = cart.reduce((acc, item) => acc + item.subTotal, 0);
 		setCartTotal(cartTotal);
+
+		if (cart.length > 0) {
+			localStorage.setItem("cart", JSON.stringify(cart));
+		}
 	}, [cart]);
+
+	useEffect(() => {
+		const cart = JSON.parse(localStorage.getItem("cart"));
+		if (cart) {
+			setCart(cart);
+		}
+	}, []);
 
 	const value = {
 		cart,
 		setCart,
 		cartTotal,
+		clearCart,
+		deleteFromCart,
 	};
 
 	return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

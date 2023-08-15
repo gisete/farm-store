@@ -8,7 +8,7 @@ const Nav = () => {
 				<li>
 					<Link
 						href="/admin"
-						className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+						className="flex items-center p-2 pb-0 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
 					>
 						<Image src="/img/grid-icon.svg" alt="Logo" width="16" height="16" />
 						<span className="ml-3">Products</span>
@@ -17,9 +17,9 @@ const Nav = () => {
 				<li>
 					<Link
 						href="/admin/add-product"
-						className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group pl-12"
+						className="flex items-center p-2 pb-0 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group pl-12"
 					>
-						Add Products
+						Add Product
 					</Link>
 				</li>
 				<li>

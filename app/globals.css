@@ -8,3 +8,62 @@ body {
 .h-screen-margin {
 	height: calc(100vh - 2rem) !important;
 }
+
+.custom-radio-container {
+	position: relative;
+	cursor: pointer;
+}
+
+.custom-radio-container input {
+	position: absolute;
+	opacity: 0;
+	cursor: pointer;
+}
+
+.radio-checkmark {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 14px;
+	width: 14px;
+	background-color: #ececec;
+	border-radius: 50%;
+}
+
+.custom-radio-container label {
+	cursor: pointer;
+	display: inline-block;
+	position: relative;
+	white-space: nowrap;
+	line-height: 1rem;
+	margin: 0 0 1.5rem 0;
+	padding: 0 0 0 1.1rem;
+	transition: all 0.5s ease-in-out;
+}
+
+.custom-radio-container:hover input ~ .radio-checkmark {
+	background-color: #e4e4e7;
+}
+
+.custom-radio-container input:checked ~ .radio-checkmark {
+	background-color: #e0e0e0;
+}
+
+.radio-checkmark:after {
+	content: "";
+	position: absolute;
+	display: none;
+}
+
+.custom-radio-container input:checked ~ .radio-checkmark:after {
+	display: block;
+}
+
+.custom-radio-container .radio-checkmark:after {
+	top: 4px;
+	left: 4px;
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: #10b981;
+}

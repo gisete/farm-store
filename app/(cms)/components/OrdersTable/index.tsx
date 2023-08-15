@@ -22,6 +22,9 @@ export default async function OrdersTable() {
 								Phone
 							</th>
 							<th scope="col" className="px-6 py-4 font-medium text-gray-900">
+								Date
+							</th>
+							<th scope="col" className="px-6 py-4 font-medium text-gray-900">
 								Total
 							</th>
 							<th scope="col" className="px-6 py-4 font-medium text-gray-900"></th>

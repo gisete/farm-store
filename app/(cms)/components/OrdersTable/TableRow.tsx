@@ -1,5 +1,6 @@
 "use client";
 import { deleteProduct } from "@/lib/firebase";
+import Link from "next/link";
 
 type SingleOrderProps = {
 	order: {
@@ -8,14 +9,18 @@ type SingleOrderProps = {
 		comment: string;
 		total: number;
 		id: string;
+		date: string;
 	};
 };
 
 const TableRow = ({ order }: SingleOrderProps) => {
 	return (
 		<tr className="">
-			<th className="px-6 py-4 font-medium text-gray-900">{order.name}</th>
+			<th className="px-6 py-4 font-medium text-gray-900">
+				<Link href={`/admin/orders/${order.id}`}>{order.name}</Link>
+			</th>
 			<td className="px-6 py-4">{order.phone}</td>
+			<td className="px-6 py-4">{order.date}</td>
 			<td className="px-6 py-4">€{order.total}</td>
 			<td className="px-6 py-4">
 				<div className="flex justify-end gap-4">

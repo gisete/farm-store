@@ -1,18 +1,20 @@
 "use client";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { createOrder } from "@/lib/firebase";
 import Cart from "../components/Cart";
 import { CartContext } from "../providers/CartProvider";
 
 const Carrinho = () => {
-	const { cart, cartTotal } = useContext(CartContext);
+	const { cart, cartTotal, clearCart } = useContext(CartContext);
+	const [orderDate, setOrderDate] = useState("");
 	const [formValues, setFormValues] = useState({
+		id: "",
 		name: "",
 		phone: "",
-		comments: "",
+		comment: "",
 		products: cart,
 		total: cartTotal,
-		data: "",
+		date: "",
 	});
 
 	const handleFormChange = (e) => {
@@ -25,29 +27,72 @@ const Carrinho = () => {
 		});
 	};
 
+	const createOrderNumber = () => {
+		const typedArray = new Uint8Array(2);
+		const randomValues = window.crypto.getRandomValues(typedArray);
+		return randomValues.join("").toString();
+	};
+
+	const getDate = () => {
+		const date = new Date();
+		return date.toLocaleString("pt", {
+			month: "2-digit",
+			day: "2-digit",
+			year: "numeric",
+			timeZone: "Europe/Lisbon",
+		});
+	};
+
+	useEffect(() => {
+		// to account for when the cart updates after the page loads
+		setFormValues({
+			...formValues,
+			products: cart,
+		});
+	}, [cart]);
+
+	useEffect(() => {
+		setFormValues({
+			...formValues,
+			total: cartTotal,
+		});
+	}, [cartTotal]);
+
 	const handleFormSubmit = async (e) => {
 		e.preventDefault();
+		const orderNumber = createOrderNumber();
+		const dateInPortugal = getDate();
 
 		setFormValues({
 			...formValues,
-			date: new Date(),
+			id: orderNumber,
+			date: dateInPortugal,
 		});
+
+		// wait for orderDate to be set then create order in useEffect
+		setOrderDate(dateInPortugal);
+	};
+
+	useEffect(() => {
+		// wait for orderDate to be set then create order
+		if (!orderDate) return;
 
 		createOrder(formValues)
 			.then(() => {
 				console.log("success!");
+				clearCart();
 			})
 			.catch((err) => {
 				console.log(err);
 			});
-	};
+	}, [orderDate]);
 
 	return (
 		<div className="flex flex-row">
-			<div className="flex flex-col z-10 max-w-5xl items-center text-sm lg:flex">
-				<section className="p-10">
+			<div className="max-w-5xl justify-center text-sm lg:flex flex-1">
+				<section className="p-10 md:w-[500px]">
 					<div className="mb-8">
-						<h1 className="text-2xl">Add Product</h1>
+						<h1 className="text-2xl">Contacto</h1>
 					</div>
 
 					<form className="bg-white mb-4 flex flex-col my-2" onSubmit={handleFormSubmit}>
@@ -98,9 +143,7 @@ const Carrinho = () => {
 									form="usrform"
 									id="comment"
 									onChange={handleFormChange}
-								>
-									Alguma nota sobre o pedido
-								</textarea>
+								></textarea>
 							</div>
 						</div>
 
@@ -116,7 +159,7 @@ const Carrinho = () => {
 							</div>
 						</div>
 
-						<button className="relative bg-violet-700 text-white p-4 mt-6 rounded" type="submit">
+						<button className="px-6 py-4 bg-zinc-800 text-white rounded font-body mt-4 text-base" type="submit">
 							Enviar pedido
 						</button>
 					</form>
@@ -124,7 +167,7 @@ const Carrinho = () => {
 			</div>
 
 			<div className="flex items-center justify-between">
-				<Cart />
+				<Cart hideButton={true} />
 			</div>
 		</div>
 	);

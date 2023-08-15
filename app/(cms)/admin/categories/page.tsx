@@ -13,7 +13,7 @@ export default async function Categories() {
 	//todo: add loading state
 	//todo: add error state
 	return (
-		<section className="p-10">
+		<section>
 			<div className="mb-5">
 				<h1 className="text-2xl">Categories</h1>
 			</div>

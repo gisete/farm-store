@@ -30,9 +30,9 @@ export default async function ProductsTable() {
 					</tr>
 				</thead>
 				<tbody className="divide-y divide-gray-100 border-t border-gray-100">
-					{data.map((product, index) => (
-						<TableRow product={product} key={`prod-${index}`} />
-					))}
+					{data &&
+						data.length > 0 &&
+						data.map((product, index) => <TableRow product={product} key={`prod-${index}`} />)}
 				</tbody>
 			</table>
 		</div>

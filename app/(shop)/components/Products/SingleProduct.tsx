@@ -2,6 +2,7 @@
 import { useState, useContext } from "react";
 import Image from "next/image";
 import { CartContext } from "../../providers/CartProvider";
+import { set } from "firebase/database";
 
 type SingleProductProps = {
 	product: {
@@ -16,9 +17,11 @@ type SingleProductProps = {
 
 const SingleProduct = ({ product }: SingleProductProps) => {
 	const { cart, setCart } = useContext(CartContext);
+	const [chosenUnit, setchosenUnit] = useState(product.unit);
 
 	const [order, setOrder] = useState({
 		name: product.name,
+		id: product.slug,
 		price: product.price,
 		quantity: 0,
 		unit: product.unit,
@@ -33,6 +36,14 @@ const SingleProduct = ({ product }: SingleProductProps) => {
 	function productExistsInCart() {
 		return cart.some((item) => item.name === order.name);
 	}
+
+	const handleRadioButton = (e) => {
+		setchosenUnit(e.target.value);
+		setOrder({
+			...order,
+			unit: e.target.value,
+		});
+	};
 
 	function handleQuantityChange(e: any) {
 		const canAddToCart = isInputValid(e);
@@ -67,21 +78,27 @@ const SingleProduct = ({ product }: SingleProductProps) => {
 
 	return (
 		<div className="block bg-white p-6">
-			<img src={product.image} className="relative" alt="" width={140} height={140} />
-			<h5 className="mb-2 text-l font-medium leading-tight text-neutral-800 dark:text-neutral-50 pt-2">
+			<Image
+				src={product.image}
+				alt=""
+				width={140}
+				height={186}
+				className="w-[140px] h-[186px] object-cover border border-gray-900 mb-2"
+			/>
+			<h5 className="mb-1 text-l font-medium leading-tight text-neutral-800 dark:text-neutral-50 pt-2 text-base">
 				{product.name}
 			</h5>
-			<p>{product.description}</p>
-			<p className="mb-2 text-base text-neutral-600 dark:text-neutral-200">
-				€{product.price} <span className="text-sm text-gray-400">/{product.unit}</span>
+			<p className="font-light italic mb-3">{product.description}</p>
+			<p className="mb-2">
+				€{product.price} /{product.unit}
 			</p>
 
 			<form>
-				<div className="mb-6 flex items-center">
+				<div className="mb-2 flex items-center">
 					<input
-						type={product.unit === "kg" ? "text" : "number"}
+						type="text"
 						id="quantity"
-						className="bg-gray-50 border border-gray-300 text-gray-900 text-right text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-16 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mr-2"
+						className="bg-zinc-50 border border-zinc-300 text-zinc-900 text-right text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-16 p-2 dark:bg-zinc-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mr-2"
 						placeholder="0"
 						required
 						onChange={handleQuantityChange}
@@ -89,11 +106,44 @@ const SingleProduct = ({ product }: SingleProductProps) => {
 					{/* <p className="mr-auto text-gray-400 text-sm">un</p> */}
 					<button
 						type="button"
-						className="text-white border bg-green-500 border-green-500 hover:bg-green-600 hover:text-white focus:ring-4 rounded-lg w-[40px] h-[40px] inline-flex items-center shrink-0 focus:outline-none focus:ring-blue-300 flex justify-center"
+						className="text-white border bg-green-500 border-green-500 hover:bg-green-600 hover:text-white focus:ring-4 rounded w-[40px] h-[40px] inline-flex items-center shrink-0 focus:outline-none focus:ring-blue-300 flex justify-center"
 						onClick={handleAddToCart}
 					>
 						<Image className="relative" src="/img/icon-plus.svg" alt="" width={16} height={16} priority />
 					</button>
+				</div>
+				<div>
+					<div className="flex">
+						<div className="flex items-center custom-radio-container mr-2">
+							<input
+								type="radio"
+								id={`${product.slug}-kg`}
+								name="unit"
+								value="kg"
+								checked={chosenUnit === "kg"}
+								onChange={handleRadioButton}
+							/>
+							<span className="radio-checkmark"></span>
+							<label htmlFor={`${product.slug}-kg`} className="pl-1 mr-2 text-sm text-light font-body">
+								kg
+							</label>
+						</div>
+
+						<div className="flex items-center custom-radio-container">
+							<input
+								type="radio"
+								id={`${product.slug}-un`}
+								name="unit"
+								value="un"
+								checked={chosenUnit === "un"}
+								onChange={handleRadioButton}
+							/>
+							<span className="radio-checkmark"></span>
+							<label htmlFor={`${product.slug}-un`} className="pl-1 text-sm text-light font-body">
+								un
+							</label>
+						</div>
+					</div>
 				</div>
 			</form>
 		</div>
