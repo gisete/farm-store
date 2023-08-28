@@ -16,9 +16,7 @@ type ProductsProps = {
 const Products = ({ products }: ProductsProps) => {
 	return (
 		<div className="grid grid-cols-5 gap-4">
-			{products.map((product, index) => (
-				<SingleProduct product={product} key={`prod-${index}`} />
-			))}
+			{products && products.map((product, index) => <SingleProduct product={product} key={`prod-${index}`} />)}
 		</div>
 	);
 };
