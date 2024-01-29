@@ -24,12 +24,12 @@ export default async function Home() {
 	const { data }: ProductsProps | any = await getMyProducts();
 
 	return (
-		<div className="flex flex-row items-start">
-			<div className="flex flex-col z-10 max-w-5xl items-center text-sm lg:flex pt-8 mr-auto">
+		<div className="flex flex-col lg:flex-row">
+			<div className="p-6 flex-[2.5]">
 				{!data || data.length === 0 ? <p>No products found.</p> : <Products products={data} />}
 			</div>
 
-			<div className="flex items-center justify-between">
+			<div className="flex-1">
 				<Cart />
 			</div>
 		</div>

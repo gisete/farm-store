@@ -1,4 +1,5 @@
 import SingleProduct from "./SingleProduct";
+import ItemRow from "./ItemRow";
 
 type ProductsProps = {
 	products: [
@@ -15,8 +16,10 @@ type ProductsProps = {
 
 const Products = ({ products }: ProductsProps) => {
 	return (
-		<div className="grid grid-cols-5 gap-4">
-			{products && products.map((product, index) => <SingleProduct product={product} key={`prod-${index}`} />)}
+		<div>
+			<div className="flex flex-col" role="table">
+				{products && products.map((product, index) => <ItemRow key={`prod-${index}`} product={product} />)}
+			</div>
 		</div>
 	);
 };

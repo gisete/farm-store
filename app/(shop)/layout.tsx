@@ -12,10 +12,12 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
 		<html lang="en">
-			<body className="font-body">
+			<body className="font-body m-2">
 				<CartProvider>
-					<Header />
-					<main>{children}</main>
+					<div className="border border-black max-w-screen-xl xl:mr-auto xl:ml-auto m-2">
+						<Header />
+						<main>{children}</main>
+					</div>
 				</CartProvider>
 			</body>
 		</html>

@@ -147,18 +147,6 @@ const Carrinho = () => {
 							</div>
 						</div>
 
-						<div className="-mx-3 md:flex mb-2">
-							<div className="md:w-full px-3">
-								<span className="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2">
-									Novo Cliente?
-								</span>
-								<input className="" id="lowStock" type="checkbox" name="lowStock" />
-								<label className="text-grey-darker pl-2" htmlFor="lowStock">
-									Sim
-								</label>
-							</div>
-						</div>
-
 						<button className="px-6 py-4 bg-zinc-800 text-white rounded font-body mt-4 text-base" type="submit">
 							Enviar pedido
 						</button>
