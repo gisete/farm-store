@@ -60,32 +60,33 @@ const Carrinho = () => {
 
 	const handleFormSubmit = async (e) => {
 		e.preventDefault();
-		const orderNumber = createOrderNumber();
+		// const orderNumber = createOrderNumber();
 		const dateInPortugal = getDate();
 
 		setFormValues({
 			...formValues,
-			id: orderNumber,
 			date: dateInPortugal,
 		});
 
+		console.log({ formValues });
+
 		// wait for orderDate to be set then create order in useEffect
-		setOrderDate(dateInPortugal);
+		// setOrderDate(dateInPortugal);
 	};
 
-	useEffect(() => {
-		// wait for orderDate to be set then create order
-		if (!orderDate) return;
+	// useEffect(() => {
+	// 	// wait for orderDate to be set then create order
+	// 	if (!orderDate) return;
 
-		createOrder(formValues)
-			.then(() => {
-				console.log("success!");
-				clearCart();
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}, [orderDate]);
+	// 	createOrder(formValues)
+	// 		.then(() => {
+	// 			console.log("success!");
+	// 			clearCart();
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log(err);
+	// 		});
+	// }, [orderDate]);
 
 	return (
 		<div className="flex flex-row">
