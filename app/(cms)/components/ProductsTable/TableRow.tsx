@@ -1,5 +1,6 @@
 "use client";
 import { deleteProduct } from "@/lib/firebase";
+import Link from "next/link";
 
 type SingleProductProps = {
 	product: {
@@ -7,21 +8,32 @@ type SingleProductProps = {
 		name: string;
 		description: string;
 		price: number;
+		priceUnit: number;
 		lowStock: boolean;
 		slug: string;
+		isProductActive: boolean;
 	};
 };
 
 const TableRow = ({ product }: SingleProductProps) => {
 	return (
 		<tr className="">
-			<th className="px-6 py-4 font-medium text-gray-900">{product.name}</th>
+			<th className="px-6 py-4 font-medium text-gray-600">
+				<Link href={`/admin/edit/${product.slug}`}> {product.name}</Link>
+			</th>
 			<td className="px-6 py-4">
-				<div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 text-emerald-500 bg-emerald-100/60 dark:bg-gray-800">
-					<h2 className="text-sm font-normal">Available</h2>
-				</div>
+				{product.isProductActive ? (
+					<div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 text-emerald-500 bg-emerald-100/60 dark:bg-gray-800">
+						<h2 className="text-sm font-normal">Available</h2>
+					</div>
+				) : (
+					<div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 text-red-500 bg-red-100/60 dark:bg-gray-800">
+						<h2 className="text-sm font-normal">Unavailable</h2>
+					</div>
+				)}
 			</td>
-			<td className="px-6 py-4">€{product.price}</td>
+			<td className="px-6 py-4 text-gray-900">€{product.price}</td>
+			<td className="px-6 py-4 text-gray-900">{product.priceUnit > 0 ? "€" + product.priceUnit : "-"}</td>
 			<td className="px-6 py-4">
 				{product.lowStock && (
 					<div className="inline-flex items-center px-3 py-1 text-gray-500 rounded-full gap-x-2 bg-gray-100/60 dark:bg-gray-800">
@@ -35,7 +47,7 @@ const TableRow = ({ product }: SingleProductProps) => {
 							/>
 						</svg>
 
-						<h2 className="text-sm font-normal">Yes</h2>
+						<h2 className="text-sm font-normal"></h2>
 					</div>
 				)}
 			</td>

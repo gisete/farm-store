@@ -21,7 +21,10 @@ export default async function ProductsTable() {
 							Status
 						</th>
 						<th scope="col" className="px-6 py-4 font-medium text-gray-900">
-							Price
+							Price (kg)
+						</th>
+						<th scope="col" className="px-6 py-4 font-medium text-gray-900">
+							Price (un)
 						</th>
 						<th scope="col" className="px-6 py-4 font-medium text-gray-900">
 							Low Stock

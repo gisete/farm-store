@@ -1,53 +1,21 @@
 "use client";
-
 import { useState, useEffect } from "react";
-import { getCategories } from "@/lib/firebase";
 import toast from "react-hot-toast";
-import Notification from "../../components/Notification";
-import ProductForm from "../../components/ProductForm";
-import useSaveProduct from "../../hooks/useSaveProduct";
-import { set } from "firebase/database";
+import useSaveProduct from "../../../hooks/useSaveProduct";
+import Notification from "../../../components/Notification";
+import ProductForm from "../../../components/ProductForm";
 
-export default function AddProduct() {
+export default function EditProduct({ product }) {
 	const [categoryData, setData] = useState([]);
-	const [isLoading, setIsLoading] = useState(false);
 	const { saveProduct, error } = useSaveProduct();
-
-	const initialFormValues = {
-		name: "",
-		description: "",
-		price: 0,
-		unit: "kg",
-		hasKg: true,
-		hasUn: false,
-		priceUnit: 0,
-		lowStock: false,
-		isProductActive: true,
-		slug: "",
-	};
-
-	const [formValues, setFormValues] = useState(initialFormValues);
-
-	useEffect(() => {
-		getCategories()
-			.then(({ data }) => {
-				if (!data) return;
-				setData(data);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}, []);
+	const [formValues, setFormValues] = useState(product);
+	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
 		if (error) {
 			toast.error("Error saving product");
 		}
 	}, [error]);
-
-	const resetForm = () => {
-		setFormValues(initialFormValues);
-	};
 
 	const getInputValue = (e) => {
 		switch (e.target.type) {
@@ -63,12 +31,10 @@ export default function AddProduct() {
 	const handleFormChange = (e) => {
 		const id = e.target.id;
 		const newValue = getInputValue(e);
-		const productSlug = formValues.name.toLowerCase().replace(/\s+/g, "-");
 
 		setFormValues({
 			...formValues,
 			[id]: newValue,
-			slug: productSlug,
 		});
 	};
 
@@ -77,15 +43,14 @@ export default function AddProduct() {
 		saveProduct(formValues);
 
 		if (!error) {
-			toast.success("Product added");
-			resetForm();
+			toast.success("Product updated");
 		}
 	};
 
 	return (
 		<section>
 			<div className="mb-8">
-				<h1 className="text-2xl">Add Product</h1>
+				<h1 className="text-2xl">Edit Product: {product.name}</h1>
 			</div>
 
 			<ProductForm

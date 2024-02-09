@@ -1,8 +1,10 @@
 "use client";
 import { useState, useContext, useEffect } from "react";
-import { createOrder } from "@/lib/firebase";
+
 import Cart from "../components/Cart";
 import { CartContext } from "../providers/CartProvider";
+import { GoogleSpreadsheet } from "google-spreadsheet";
+import { JWT } from "google-auth-library";
 
 const Carrinho = () => {
 	const { cart, cartTotal, clearCart } = useContext(CartContext);
@@ -17,6 +19,29 @@ const Carrinho = () => {
 		date: "",
 	});
 
+	//Import environmental varialbles
+	const {
+		HORTA_GOOGLEAPP_PRIVATE_KEY,
+		HORTA_GOOGLEAPP_CLIENT_EMAIL,
+		HORTA_GOOGLEAPP_SPREADSHEET_ID,
+		HORTA_GOOGLEAPP_SHEET_ID,
+	} = process.env;
+
+	const SCOPES = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive.file"];
+
+	const jwt = new JWT({
+		email: HORTA_GOOGLEAPP_CLIENT_EMAIL,
+		key: HORTA_GOOGLEAPP_PRIVATE_KEY,
+		scopes: SCOPES,
+	});
+
+	const doc = new GoogleSpreadsheet("1Q5aJsPBrmsjcTQDf1lKiC6TYZADiQg-Vq0STruy8z2U", jwt);
+
+	// (async function () {
+	// 	await doc.loadInfo(); // loads document properties and worksheets
+	// 	console.log(doc.title);
+	// })();
+
 	const handleFormChange = (e) => {
 		const id = e.target.id;
 		const newValue = e.target.value;
@@ -27,11 +52,11 @@ const Carrinho = () => {
 		});
 	};
 
-	const createOrderNumber = () => {
-		const typedArray = new Uint8Array(2);
-		const randomValues = window.crypto.getRandomValues(typedArray);
-		return randomValues.join("").toString();
-	};
+	// const createOrderNumber = () => {
+	// 	const typedArray = new Uint8Array(2);
+	// 	const randomValues = window.crypto.getRandomValues(typedArray);
+	// 	return randomValues.join("").toString();
+	// };
 
 	const getDate = () => {
 		const date = new Date();
