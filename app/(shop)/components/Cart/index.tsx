@@ -17,8 +17,8 @@ const Cart = ({ hideButton }: CartProps) => {
 			<div className="p-6 flex flex-col">
 				<h4 className="text-center text-lg mb-6">Cabaz</h4>
 				<ul>
-					{cart.map((item) => (
-						<CartItem item={item} />
+					{cart.map((item, index) => (
+						<CartItem item={item} key={`cartitem-${index}`} />
 					))}
 				</ul>
 

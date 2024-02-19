@@ -8,8 +8,10 @@ import ProductForm from "../../components/ProductForm";
 import useSaveProduct from "../../hooks/useSaveProduct";
 import { set } from "firebase/database";
 
+type CategoryState = string[];
+
 export default function AddProduct() {
-	const [categoryData, setData] = useState([]);
+	const [categoryData, setData] = useState<CategoryState>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const { saveProduct, error } = useSaveProduct();
 
@@ -49,7 +51,7 @@ export default function AddProduct() {
 		setFormValues(initialFormValues);
 	};
 
-	const getInputValue = (e) => {
+	const getInputValue = (e: React.ChangeEvent<any>): void => {
 		switch (e.target.type) {
 			case "file":
 				return e.target.files[0];
@@ -60,7 +62,7 @@ export default function AddProduct() {
 		}
 	};
 
-	const handleFormChange = (e) => {
+	const handleFormChange = (e: React.ChangeEvent<any>): void => {
 		const id = e.target.id;
 		const newValue = getInputValue(e);
 		const productSlug = formValues.name.toLowerCase().replace(/\s+/g, "-");
