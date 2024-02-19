@@ -168,7 +168,7 @@ export default function ProductForm({
 						checked={formValues.isProductActive}
 					/>
 					<label className="text-grey-darker pl-2" htmlFor="isProductActive">
-						Available
+						Active
 					</label>
 				</div>
 				<div className="px-3 flex items-center">

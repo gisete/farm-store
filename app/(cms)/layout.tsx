@@ -2,6 +2,7 @@ import "../globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import SidePanel from "./components/SidePanel";
+import LogoutButton from "./components/LogoutButton";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,14 +15,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 	return (
 		<html lang="en">
 			<body className={inter.className}>
-				<div className="flex bg-orange-50 ">
-					<aside className="w-64 h-screen ">
-						<SidePanel />
-					</aside>
+				<div className="bg-[#fbf8f3]">
+					<LogoutButton />
 
-					<main className="h-screen flex-1 py-8 pr-8">
-						<div className="bg-white min-h-full px-12 py-16">{children}</div>
-					</main>
+					<div className="flex">
+						<aside className="w-64 h-screen ">
+							<SidePanel />
+						</aside>
+
+						<main className="h-screen flex-1 pb-8 pr-8">
+							<div className="bg-white min-h-full px-12 py-16">{children}</div>
+						</main>
+					</div>
 				</div>
 			</body>
 		</html>

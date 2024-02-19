@@ -50,7 +50,7 @@ export default function EditProduct({ product }) {
 	return (
 		<section>
 			<div className="mb-8">
-				<h1 className="text-2xl">Edit Product: {product.name}</h1>
+				<h1 className="text-2xl">Edit Product</h1>
 			</div>
 
 			<ProductForm

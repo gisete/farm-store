@@ -24,11 +24,11 @@ const TableRow = ({ product }: SingleProductProps) => {
 			<td className="px-6 py-4">
 				{product.isProductActive ? (
 					<div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 text-emerald-500 bg-emerald-100/60 dark:bg-gray-800">
-						<h2 className="text-sm font-normal">Available</h2>
+						<h2 className="text-sm font-normal">Active</h2>
 					</div>
 				) : (
-					<div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 text-red-500 bg-red-100/60 dark:bg-gray-800">
-						<h2 className="text-sm font-normal">Unavailable</h2>
+					<div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 text-orange-500 bg-orange-100/60 dark:bg-gray-800">
+						<h2 className="text-sm font-normal">Inactive</h2>
 					</div>
 				)}
 			</td>
