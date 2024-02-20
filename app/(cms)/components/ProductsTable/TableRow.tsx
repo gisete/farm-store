@@ -32,7 +32,7 @@ const TableRow = ({ product }: SingleProductProps) => {
 					</div>
 				)}
 			</td>
-			<td className="px-6 py-4 text-gray-900">€{product.price}</td>
+			<td className="px-6 py-4 text-gray-900">{product.price > 0 ? "€" + product.price : "-"}</td>
 			<td className="px-6 py-4 text-gray-900">{product.priceUnit > 0 ? "€" + product.priceUnit : "-"}</td>
 			<td className="px-6 py-4">
 				{product.lowStock && (

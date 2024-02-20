@@ -95,70 +95,42 @@ export default function ProductForm({
 					</div>
 				</div>
 
-				<div className="md:w-1/2 px-3 flex">
-					<div>
-						<div className="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2">Unit</div>
-
-						<div className="">
-							<div>
-								<input
-									className=""
-									id="hasKg"
-									type="checkbox"
-									name="hasKg"
-									onChange={handleFormChange}
-									checked={formValues.hasKg}
-								/>
-								<label className="text-grey-darker pl-2" htmlFor="hasKg">
-									kg
-								</label>
-							</div>
-
-							<div>
-								<input className="" id="hasUn" type="checkbox" name="hasUn" onChange={handleFormChange} />
-								<label className="text-grey-darker pl-2" htmlFor="hasUn">
-									un
-								</label>
-							</div>
-						</div>
+				<div className="md:w-1/2 flex">
+					<div className="px-3">
+						<label className="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2" htmlFor="price">
+							Price (kg)
+						</label>
+						<input
+							className="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3"
+							id="price"
+							type="text"
+							placeholder=""
+							onChange={handleFormChange}
+							value={formValues.price}
+						/>
 					</div>
 
-					{formValues.hasKg && (
-						<div className="px-3">
-							<label className="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2" htmlFor="price">
-								Price (kg)
-							</label>
-							<input
-								className="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3"
-								id="price"
-								type="text"
-								placeholder=""
-								onChange={handleFormChange}
-								value={formValues.price}
-							/>
-						</div>
-					)}
-
-					{formValues.hasUn && (
-						<div className="px-3">
-							<label className="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2" htmlFor="price">
-								Price (unit)
-							</label>
-							<input
-								className="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3"
-								id="priceUnit"
-								type="text"
-								placeholder=""
-								onChange={handleFormChange}
-								value={formValues.priceUnit}
-							/>
-						</div>
-					)}
+					<div className="px-3">
+						<label className="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2" htmlFor="price">
+							Price (unit)
+						</label>
+						<input
+							className="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3"
+							id="priceUnit"
+							type="text"
+							placeholder=""
+							onChange={handleFormChange}
+							value={formValues.priceUnit}
+						/>
+					</div>
 				</div>
 			</div>
 
-			<div className="-mx-3 md:flex mb-8">
-				<div className="px-3 flex items-center">
+			<div className="-mx-3 md:flex mb-4">
+				<div className="px-3 pr-4">
+					<label className="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2" htmlFor="category">
+						Status
+					</label>
 					<input
 						className=""
 						id="isProductActive"
@@ -171,7 +143,10 @@ export default function ProductForm({
 						Active
 					</label>
 				</div>
-				<div className="px-3 flex items-center">
+				<div className="px-3">
+					<label className="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2" htmlFor="category">
+						Stock
+					</label>
 					<input
 						className=""
 						id="lowStock"
@@ -186,15 +161,17 @@ export default function ProductForm({
 				</div>
 			</div>
 
-			<button className="relative bg-violet-700 text-white p-4 mt-6 rounded" type="submit">
-				<div className="flex items-center justify-center m-[10px]">
-					{isLoading && (
-						<div className="h-5 w-5 border-t-transparent border-solid animate-spin rounded-full border-white border-4"></div>
-					)}
+			<div className="flex justify-end">
+				<button className="relative bg-green-500 text-white p-2 mt-2 rounded" type="submit">
+					<div className="flex items-center justify-center m-[10px]">
+						{isLoading && (
+							<div className="h-5 w-5 border-t-transparent border-solid animate-spin rounded-full border-white border-4"></div>
+						)}
 
-					<div className="ml-2"> {isLoading ? "Saving" : "Save Product"} </div>
-				</div>
-			</button>
+						<div className="ml-2"> {isLoading ? "Saving" : "Save Product"} </div>
+					</div>
+				</button>
+			</div>
 		</form>
 	);
 }

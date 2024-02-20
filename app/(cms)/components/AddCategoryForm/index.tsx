@@ -40,7 +40,7 @@ const AddCategoryForm = () => {
 							Name
 						</label>
 						<input
-							className="appearance-none block w-full bg-grey-lighter text-grey-darker border border-red rounded py-3 px-4 mb-3"
+							className="appearance-none block w-full bg-grey-lighter text-grey-darker border border-red rounded py-3 px-3 mb-3"
 							id="name"
 							type="text"
 							placeholder=""
@@ -48,7 +48,7 @@ const AddCategoryForm = () => {
 						/>
 					</div>
 					<div className="md:w-2/3 px-3">
-						<button className="relative bg-violet-700 text-white p-4 mt-6 rounded" type="submit">
+						<button className="relative bg-green-500 text-white p-3 mt-6 rounded" type="submit">
 							Add Category
 						</button>
 					</div>
