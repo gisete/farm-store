@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import Notification from "../../components/Notification";
 import ProductForm from "../../components/ProductForm";
 import useSaveProduct from "../../hooks/useSaveProduct";
-import { set } from "firebase/database";
+import { getProducts } from "@lib/firebase";
 
 type CategoryState = string[];
 
@@ -26,6 +26,7 @@ export default function AddProduct() {
 		lowStock: false,
 		isProductActive: true,
 		slug: "",
+		position: 0,
 	};
 
 	const [formValues, setFormValues] = useState(initialFormValues);
@@ -66,6 +67,7 @@ export default function AddProduct() {
 		const id = e.target.id;
 		const newValue = getInputValue(e);
 		const productSlug = formValues.name.toLowerCase().replace(/\s+/g, "-");
+		const productQuantity = formValues.priceUnit;
 
 		setFormValues({
 			...formValues,

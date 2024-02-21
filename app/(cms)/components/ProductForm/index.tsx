@@ -14,6 +14,7 @@ type FormValuesType = {
 	lowStock: boolean;
 	isProductActive: boolean;
 	slug: string;
+	position: number;
 };
 
 type ProductFormProps = {
