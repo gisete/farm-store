@@ -6,7 +6,6 @@ import toast from "react-hot-toast";
 import Notification from "../../components/Notification";
 import ProductForm from "../../components/ProductForm";
 import useSaveProduct from "../../hooks/useSaveProduct";
-import { getProducts } from "@lib/firebase";
 
 type CategoryState = string[];
 
