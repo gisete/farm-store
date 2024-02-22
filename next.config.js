@@ -13,6 +13,11 @@ const nextConfig = {
 	typescript: {
 		ignoreBuildErrors: true,
 	},
+	logging: {
+		fetches: {
+			fullUrl: true,
+		},
+	},
 	webpack: (config) => {
 		config.resolve.fallback = {
 			fs: false,

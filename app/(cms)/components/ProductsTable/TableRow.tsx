@@ -1,8 +1,7 @@
 "use client";
-import { useEffect } from "react";
+
 import { deleteProduct } from "@/lib/firebase";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 type SingleProductProps = {
 	product: {
@@ -18,12 +17,6 @@ type SingleProductProps = {
 };
 
 const TableRow = ({ product }: SingleProductProps) => {
-	const router = useRouter();
-
-	useEffect(() => {
-		router.refresh();
-	}, []);
-
 	return (
 		<tr className="">
 			<th className="px-6 py-4 font-medium text-gray-600">

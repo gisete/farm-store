@@ -1,13 +1,18 @@
-import { getProducts } from "@lib/firebase";
 import TableRow from "./TableRow";
 
-async function getMyProducts() {
-	const res = await getProducts();
-	return res;
+async function getProductsData() {
+	const res = await fetch("http://localhost:3000/api/getProducts", { method: "GET", cache: "no-store" });
+	const { data } = await res.json();
+
+	if (!res.ok) {
+		return null;
+	}
+
+	return data;
 }
 
 export default async function ProductsTable() {
-	const { data } = await getMyProducts();
+	const data = await getProductsData();
 
 	return (
 		<div className="overflow-hidden ">
@@ -32,11 +37,13 @@ export default async function ProductsTable() {
 						<th scope="col" className="px-6 py-4 font-medium text-gray-900"></th>
 					</tr>
 				</thead>
-				<tbody className="divide-y divide-gray-100 border-t border-gray-100">
-					{data &&
-						data.length > 0 &&
-						data.map((product, index) => <TableRow product={product} key={`prod-${index}`} />)}
-				</tbody>
+				{data && (
+					<tbody className="divide-y divide-gray-100 border-t border-gray-100">
+						{Object.keys(data).map((product, index) => (
+							<TableRow product={data[product]} key={`prod-${index}`} />
+						))}
+					</tbody>
+				)}
 			</table>
 		</div>
 	);
