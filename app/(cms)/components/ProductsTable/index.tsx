@@ -1,7 +1,7 @@
 import TableRow from "./TableRow";
 
 async function getProductsData() {
-	const res = await fetch("http://localhost:3000/api/getProducts", { method: "GET", cache: "no-store" });
+	const res = await fetch(process.env.URL + "/api/getProducts", { method: "GET", cache: "no-store" });
 	const { data } = await res.json();
 
 	if (!res.ok) {
