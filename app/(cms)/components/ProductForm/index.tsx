@@ -1,6 +1,5 @@
 "use client";
 
-import { type } from "os";
 import { useState, useEffect, useRef } from "react";
 
 type FormValuesType = {
@@ -47,6 +46,7 @@ export default function ProductForm({
 						placeholder=""
 						onChange={handleFormChange}
 						value={formValues.name}
+						required
 					/>
 				</div>
 				<div className="md:w-2/3 px-3">
@@ -105,6 +105,7 @@ export default function ProductForm({
 							className="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3"
 							id="price"
 							type="text"
+							lang="pt-br"
 							placeholder=""
 							onChange={handleFormChange}
 							value={formValues.price}
@@ -116,6 +117,7 @@ export default function ProductForm({
 							Price (unit)
 						</label>
 						<input
+							lang="pt-br"
 							className="appearance-none block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3"
 							id="priceUnit"
 							type="text"
