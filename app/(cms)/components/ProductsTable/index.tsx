@@ -1,12 +1,28 @@
 "use client";
 
 import TableRow from "./TableRow";
-import useSWR from "swr";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { database } from "@/lib/firebase-config";
+import { ref, onValue, set } from "firebase/database";
 
 export default function ProductsTable() {
-	const fetcher = (...args) => fetch(...args).then((res) => res.json());
-	const { data } = useSWR("/api/getProducts", fetcher);
-	const allProducts = data?.data;
+	const productsRef = ref(database, "products");
+	const [allProducts, setAllProducts] = useState([]);
+
+	useEffect(() => {
+		onValue(productsRef, (snapshot) => {
+			const data = snapshot.val();
+			var result = [];
+
+			for (var slug in data) {
+				const product = data[slug];
+				result.push(product);
+			}
+
+			setAllProducts(result);
+		});
+	}, []);
 
 	return (
 		<div className="overflow-hidden ">
@@ -31,7 +47,7 @@ export default function ProductsTable() {
 						<th scope="col" className="px-6 py-4 font-medium text-gray-900"></th>
 					</tr>
 				</thead>
-				{data && (
+				{allProducts && (
 					<tbody className="divide-y divide-gray-100 border-t border-gray-100">
 						{allProducts.map((product, index) => (
 							<TableRow product={product} key={`prod-${index}`} />
@@ -43,33 +59,4 @@ export default function ProductsTable() {
 	);
 }
 
-// {
-//   "data": [
-//       {
-//           "description": "sdsd",
-//           "hasKg": true,
-//           "hasUn": false,
-//           "isProductActive": true,
-//           "lowStock": false,
-//           "name": "sdsdsd",
-//           "position": 0,
-//           "price": "3",
-//           "priceUnit": "3",
-//           "slug": "sdsdsd",
-//           "unit": "kg"
-//       },
-//       {
-//           "description": "test",
-//           "hasKg": true,
-//           "hasUn": false,
-//           "isProductActive": true,
-//           "lowStock": false,
-//           "name": "test",
-//           "position": 0,
-//           "price": "4",
-//           "priceUnit": 0,
-//           "slug": "test",
-//           "unit": "kg"
-//       }
-//   ]
-// }
+export const revalidate = 60;

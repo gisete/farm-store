@@ -11,7 +11,6 @@ export async function GET(request: Request) {
 
 		if (snapshot.exists()) {
 			const snapshotVal = snapshot.val();
-
 			const finalData = [];
 			for (var slug in snapshotVal) {
 				const product = snapshotVal[slug];
