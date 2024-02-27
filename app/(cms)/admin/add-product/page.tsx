@@ -6,6 +6,8 @@ import toast from "react-hot-toast";
 import Notification from "../../components/Notification";
 import ProductForm from "../../components/ProductForm";
 import useSaveProduct from "../../hooks/useSaveProduct";
+import useGetProducts from "../../hooks/useGetProducts";
+import { get } from "http";
 
 type CategoryState = string[];
 
@@ -13,6 +15,7 @@ export default function AddProduct() {
 	const [categoryData, setData] = useState<CategoryState>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const { saveProduct, error } = useSaveProduct();
+	const { getProductsLength, productsLength } = useGetProducts();
 
 	const initialFormValues = {
 		name: "",
@@ -29,6 +32,10 @@ export default function AddProduct() {
 	};
 
 	const [formValues, setFormValues] = useState(initialFormValues);
+
+	useEffect(() => {
+		getProductsLength();
+	}, []);
 
 	useEffect(() => {
 		getCategories()
@@ -72,6 +79,7 @@ export default function AddProduct() {
 			...formValues,
 			[id]: newValue,
 			slug: productSlug,
+			position: productsLength + 1,
 		});
 	};
 
