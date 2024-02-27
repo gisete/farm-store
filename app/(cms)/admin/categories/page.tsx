@@ -1,15 +1,29 @@
-import { useState } from "react";
-import { getCategories } from "@/lib/firebase";
+"use client";
+
+import { useState, useEffect } from "react";
+import { database } from "@/lib/firebase-config";
+import { ref, onValue } from "firebase/database";
 import AddCategoryForm from "../../components/AddCategoryForm";
 import CategoriesTable from "../../components/CategoriesTable";
 
-async function getFirebaseCategories() {
-	const res = await getCategories();
-	return res;
-}
+export default function Categories() {
+	const categoriesRef = ref(database, "categories");
+	const [allCategories, setAllCategories] = useState([]);
 
-export default async function Categories() {
-	const { data } = await getFirebaseCategories();
+	useEffect(() => {
+		onValue(categoriesRef, (snapshot) => {
+			const data = snapshot.val();
+			var result = [];
+
+			for (var slug in data) {
+				const categories = data[slug];
+				result.push(categories);
+			}
+
+			setAllCategories(result);
+		});
+	}, []);
+
 	//todo: add loading state
 	//todo: add error state
 	return (
@@ -20,7 +34,7 @@ export default async function Categories() {
 
 			<AddCategoryForm />
 
-			<CategoriesTable categories={data} />
+			<CategoriesTable categories={allCategories} />
 		</section>
 	);
 }

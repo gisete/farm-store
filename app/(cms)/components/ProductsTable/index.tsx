@@ -2,9 +2,8 @@
 
 import TableRow from "./TableRow";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { database } from "@/lib/firebase-config";
-import { ref, onValue, set } from "firebase/database";
+import { ref, onValue } from "firebase/database";
 
 export default function ProductsTable() {
 	const productsRef = ref(database, "products");
