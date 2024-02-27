@@ -1,18 +1,12 @@
+"use client";
+
 import TableRow from "./TableRow";
+import useSWR from "swr";
 
-async function getProductsData() {
-	const res = await fetch(process.env.URL + "/api/getProducts", { method: "GET", cache: "no-store" });
-	const { data } = await res.json();
-
-	if (!res.ok) {
-		return null;
-	}
-
-	return data;
-}
-
-export default async function ProductsTable() {
-	const data = await getProductsData();
+export default function ProductsTable() {
+	const fetcher = (...args) => fetch(...args).then((res) => res.json());
+	const { data } = useSWR("/api/getProducts", fetcher);
+	const allProducts = data?.data;
 
 	return (
 		<div className="overflow-hidden ">
@@ -39,8 +33,8 @@ export default async function ProductsTable() {
 				</thead>
 				{data && (
 					<tbody className="divide-y divide-gray-100 border-t border-gray-100">
-						{Object.keys(data).map((product, index) => (
-							<TableRow product={data[product]} key={`prod-${index}`} />
+						{allProducts.map((product, index) => (
+							<TableRow product={product} key={`prod-${index}`} />
 						))}
 					</tbody>
 				)}
@@ -48,3 +42,34 @@ export default async function ProductsTable() {
 		</div>
 	);
 }
+
+// {
+//   "data": [
+//       {
+//           "description": "sdsd",
+//           "hasKg": true,
+//           "hasUn": false,
+//           "isProductActive": true,
+//           "lowStock": false,
+//           "name": "sdsdsd",
+//           "position": 0,
+//           "price": "3",
+//           "priceUnit": "3",
+//           "slug": "sdsdsd",
+//           "unit": "kg"
+//       },
+//       {
+//           "description": "test",
+//           "hasKg": true,
+//           "hasUn": false,
+//           "isProductActive": true,
+//           "lowStock": false,
+//           "name": "test",
+//           "position": 0,
+//           "price": "4",
+//           "priceUnit": 0,
+//           "slug": "test",
+//           "unit": "kg"
+//       }
+//   ]
+// }
