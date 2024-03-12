@@ -25,7 +25,7 @@ export default async function Home() {
 
 	return (
 		<div className="flex flex-col lg:flex-row">
-			<div className="p-6 flex-[2.5]">
+			<div className="p-6 flex-[2.5]  border-r border-black">
 				{!data || data.length === 0 ? <p>No products found.</p> : <Products products={data} />}
 			</div>
 

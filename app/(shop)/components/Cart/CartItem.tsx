@@ -10,15 +10,15 @@ const CartItem = ({ item }) => {
 	const { deleteFromCart } = useContext(CartContext);
 
 	return (
-		<li className="flex mb-4" key={item.id}>
+		<li className="flex mb-4 border-b border-dashed border-zinc-100" key={item.id}>
 			<div className="mr-auto">
-				<p className="text-sm font-medium">{item.name}</p>
-				<p className="font-light text-sm">
-					{formattedQuantity} {item.unit} × €{item.price}
-				</p>
+				<p className="">{item.name}</p>
 			</div>
 
-			<p className="mr-2">€{formattedSubTotal}</p>
+			<p className="mr-2">
+				{formattedQuantity}
+				<span className="text-sm">{item.unit} </span>
+			</p>
 
 			<button
 				x-data="{ tooltip: 'Delete' }"

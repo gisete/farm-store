@@ -7,8 +7,6 @@ type FormValuesType = {
 	description: string;
 	price: number;
 	unit: string;
-	hasKg: boolean;
-	hasUn: boolean;
 	priceUnit: number;
 	lowStock: boolean;
 	isProductActive: boolean;

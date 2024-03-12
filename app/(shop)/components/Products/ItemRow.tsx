@@ -6,8 +6,10 @@ import { set } from "firebase/database";
 
 const ItemRow = ({ product }) => {
 	const { cart, setCart } = useContext(CartContext);
-	const [chosenUnit, setchosenUnit] = useState(product.unit);
+	const productUnit = product.price ? "kg" : "un";
+	const [chosenUnit, setchosenUnit] = useState(productUnit);
 	const [quantity, setQuantity] = useState(0);
+	const productPrice = product.price ? parseFloat(product.price) : parseFloat(product.priceUnit);
 
 	function isInputValid(e: any) {
 		const value = e.target.value;
@@ -17,9 +19,9 @@ const ItemRow = ({ product }) => {
 	const [order, setOrder] = useState({
 		name: product.name,
 		id: product.slug,
-		price: product.price,
+		price: productPrice,
 		quantity: 0,
-		unit: product.unit,
+		unit: productUnit,
 		subTotal: 0,
 	});
 
@@ -43,11 +45,12 @@ const ItemRow = ({ product }) => {
 		if (isNaN(e.target.value)) return;
 		const parsedValue = parseFloat(e.target.value.replace(/,/, "."));
 		setQuantity(e.target.value);
+		const calculatedSubtotal = product.priceUnit ? product.priceUnit * parsedValue : 0;
 
 		setOrder({
 			...order,
 			quantity: parsedValue,
-			subTotal: order.price * parsedValue,
+			subTotal: calculatedSubtotal,
 		});
 	}
 
@@ -74,12 +77,12 @@ const ItemRow = ({ product }) => {
 	}
 
 	return (
-		<form className="grid border-b grid-cols-6 py-2 font-body" role="rowgroup">
+		<form className="grid border-b border-zinc-100 grid-cols-6 py-2 font-body" role="rowgroup">
 			<div className="col-span-3 flex items-center" role="cell">
-				{product.name} ({product.description})
+				{product.name} <span className="font-light">&nbsp;{product.description && `/ ${product.description}`}</span>
 			</div>
-			<div className=" flex items-center" role="cell">
-				€{product.price}/{product.unit}
+			<div className=" flex items-center font-light" role="cell">
+				€{productPrice.toLocaleString("pt")}/{productUnit}
 			</div>
 
 			<div className="flex" role="cell">
@@ -87,8 +90,6 @@ const ItemRow = ({ product }) => {
 					type="text"
 					id="quantity"
 					className="bg-zinc-50 border border-zinc-300 text-zinc-900 text-right text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-14 p-1 dark:bg-zinc-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mr-2"
-					value={quantity === 0 ? "" : quantity}
-					required
 					onChange={handleQuantityChange}
 					onFocus={handleFocus}
 				/>
