@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { CartContext } from "../../providers/CartProvider";
 import CartItem from "./CartItem";
 import ContactForm from "../ContactForm";
@@ -11,6 +11,24 @@ type CartProps = {
 
 const Cart = ({ hideButton }: CartProps) => {
 	const { cart, cartTotal, showContactForm, setShowContactForm, orderSent } = useContext(CartContext);
+
+	const [formValues, setFormValues] = useState({
+		id: "",
+		name: "",
+		phone: "",
+		comment: "",
+		products: cart,
+		total: cartTotal,
+		date: "",
+	});
+
+	// for when the cart updates after getting localstorage values
+	useEffect(() => {
+		setFormValues({
+			...formValues,
+			products: cart,
+		});
+	}, [cart]);
 
 	return (
 		<div className="w-100">
@@ -40,10 +58,11 @@ const Cart = ({ hideButton }: CartProps) => {
 								className="block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3"
 								form="usrform"
 								id="comment"
+								onChange={(e) => setFormValues({ ...formValues, comment: e.target.value })}
 							></textarea>
 						</div>
 
-						{showContactForm && <ContactForm />}
+						{showContactForm && <ContactForm formValues={formValues} setFormValues={setFormValues} />}
 
 						{showContactForm ? null : (
 							<div className="text-center mt-8">

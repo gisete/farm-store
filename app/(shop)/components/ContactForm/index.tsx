@@ -8,19 +8,14 @@ import { set } from "firebase/database";
 import { GoogleSpreadsheet } from "google-spreadsheet";
 import { JWT } from "google-auth-library";
 
-const ContactForm = () => {
+const ContactForm = ({ formValues, setFormValues }) => {
 	const { cart, cartTotal, clearCart, showContactForm, setShowContactForm, setOrderSent } = useContext(CartContext);
-	const [formValues, setFormValues] = useState({
-		id: "",
-		name: "",
-		phone: "",
-		comment: "",
-		products: cart,
-		total: cartTotal,
-		date: "",
-	});
 
-	const SCOPES = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive.file"];
+	const SCOPES = [
+		"https://www.googleapis.com/auth/spreadsheets",
+		"https://www.googleapis.com/auth/drive.file",
+		"https://www.googleapis.com/auth/drive",
+	];
 
 	const appendRow = async () => {
 		try {
@@ -31,8 +26,17 @@ const ContactForm = () => {
 			});
 			const orderName = formValues.name.replace(/\s/g, "_").toLowerCase();
 
-			const doc = new GoogleSpreadsheet("1Q5aJsPBrmsjcTQDf1lKiC6TYZADiQg-Vq0STruy8z2U", jwt);
+			// create a new GoogleSpreadsheet object
+			const doc = await GoogleSpreadsheet.createNewSpreadsheetDocument(jwt, { title: "Encomendas" });
+
+			// const doc = new GoogleSpreadsheet("1Q5aJsPBrmsjcTQDf1lKiC6TYZADiQg-Vq0STruy8z2U", jwt);
 			await doc.loadInfo();
+			const permissions = await doc.listPermissions();
+			console.log(permissions);
+			await doc.share("gisete@gmail.com", { role: "writer" });
+
+			// On first sheet, calculate totals from all orders
+
 			const newSheet = await doc.addSheet({
 				title: orderName,
 				headerValues: ["PRODUTO", "QUANTIDADE", "UNIDADE", "SUBTOTAL"],
