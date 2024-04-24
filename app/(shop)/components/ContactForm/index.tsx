@@ -5,65 +5,11 @@ import { CartContext } from "../../providers/CartProvider";
 import { createOrder } from "@/lib/firebase";
 import { toast } from "react-hot-toast";
 import { set } from "firebase/database";
-import { GoogleSpreadsheet } from "google-spreadsheet";
-import { JWT } from "google-auth-library";
+import updateGoogleSpreadsheet from "@/lib/googleSpreadsheet";
 
 const ContactForm = ({ formValues, setFormValues }) => {
 	const { cart, cartTotal, clearCart, showContactForm, setShowContactForm, setOrderSent } = useContext(CartContext);
-
-	const SCOPES = [
-		"https://www.googleapis.com/auth/spreadsheets",
-		"https://www.googleapis.com/auth/drive.file",
-		"https://www.googleapis.com/auth/drive",
-	];
-
-	const appendRow = async () => {
-		try {
-			const jwt = new JWT({
-				email: "hortdadopedescalco@horta-412711.iam.gserviceaccount.com",
-				key: process.env.NEXT_PUBLIC_HORTA_GOOGLEAPP_PRIVATE_KEY,
-				scopes: SCOPES,
-			});
-			const orderName = formValues.name.replace(/\s/g, "_").toLowerCase();
-
-			// create a new GoogleSpreadsheet object
-			const doc = await GoogleSpreadsheet.createNewSpreadsheetDocument(jwt, { title: "Encomendas" });
-
-			// const doc = new GoogleSpreadsheet("1Q5aJsPBrmsjcTQDf1lKiC6TYZADiQg-Vq0STruy8z2U", jwt);
-			await doc.loadInfo();
-			const permissions = await doc.listPermissions();
-			console.log(permissions);
-			await doc.share("gisete@gmail.com", { role: "writer" });
-
-			// On first sheet, calculate totals from all orders
-
-			const newSheet = await doc.addSheet({
-				title: orderName,
-				headerValues: ["PRODUTO", "QUANTIDADE", "UNIDADE", "SUBTOTAL"],
-			});
-
-			// Products
-			const formatedProducts = formValues.products.map((product) => {
-				return {
-					PRODUTO: product.name,
-					QUANTIDADE: product.quantity,
-					UNIDADE: product.unit,
-					SUBTOTAL: product.subTotal,
-				};
-			});
-
-			await newSheet.addRows(formatedProducts);
-
-			// Contact information
-			await newSheet.addRow(["-"]);
-			await newSheet.addRow(["NOME", formValues.name]);
-			await newSheet.addRow(["CONTACTO", formValues.phone]);
-			await newSheet.addRow(["DATA", formValues.date]);
-			await newSheet.addRow(["COMENTÁRIO", formValues.comment]);
-		} catch (error) {
-			console.log("Error: ", error);
-		}
-	};
+	const [hasError, setHasError] = useState(false);
 
 	const handleFormChange = (e) => {
 		const id = e.target.id;
@@ -102,10 +48,17 @@ const ContactForm = ({ formValues, setFormValues }) => {
 		});
 	}, [cartTotal]);
 
-	function sendOrder() {
+	async function sendOrder() {
 		// createOrder(formValues);
 		console.log(formValues);
-		appendRow();
+		updateGoogleSpreadsheet(formValues)
+			.then(() => {
+				console.log("Success");
+			})
+			.catch((error) => {
+				console.error(error);
+				setHasError(true);
+			});
 		// setShowContactForm(false);
 		// setOrderSent(true);
 		// clearCart();
@@ -158,6 +111,8 @@ const ContactForm = ({ formValues, setFormValues }) => {
 				<button className="px-6 py-4 bg-zinc-800 text-white rounded font-body mt-4 text-base" type="submit">
 					Enviar encomenda
 				</button>
+
+				{hasError && <p className="text-red-500 text-center mt-4">Ocorreu um erro, por favor tente novamente</p>}
 			</form>
 		</div>
 	);

@@ -77,62 +77,72 @@ const ItemRow = ({ product }) => {
 	}
 
 	return (
-		<form className="grid border-b border-zinc-100 grid-cols-6 py-2 font-body" role="rowgroup">
-			<div className="col-span-3 flex items-center" role="cell">
-				{product.name} <span className="font-light">&nbsp;{product.description && `/ ${product.description}`}</span>
+		<form className="grid border-b border-zinc-100 grid-cols-5 md:grid-cols-4 py-3 md:py-2 font-body" role="rowgroup">
+			<div className="col-span-4 md:col-span-2 flex flex-col mb-2 md:mb-0" role="cell">
+				<div> {product.name}</div>
+				{product.description && (
+					<div>
+						<span className="font-light">{`${product.description}`}</span>
+					</div>
+				)}
 			</div>
-			<div className=" flex items-center font-light" role="cell">
+			<div
+				className="col-start-5 md:col-auto col-span-2 md:col-span-1 flex md:items-center justify-self-end md:justify-self-auto"
+				role="cell"
+			>
 				€{productPrice.toLocaleString("pt")}/{productUnit}
 			</div>
 
-			<div className="flex" role="cell">
-				<input
-					type="text"
-					id="quantity"
-					className="bg-zinc-50 border border-zinc-300 text-zinc-900 text-right text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-14 p-1 dark:bg-zinc-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mr-2"
-					onChange={handleQuantityChange}
-					onFocus={handleFocus}
-				/>
-
+			<div className="col-span-5 md:col-span-1 flex mt-2 md:mt-0 mb-2 md:mb-0 flex-col md:flex-row" role="cell">
 				<div className="flex">
-					<div className="flex items-center custom-radio-container mr-1">
-						<input
-							type="radio"
-							id={`${product.slug}-kg`}
-							name="unit"
-							value="kg"
-							checked={chosenUnit === "kg"}
-							onChange={handleRadioButton}
-						/>
-						<span className="radio-checkmark"></span>
-						<label htmlFor={`${product.slug}-kg`} className="pl-1 mr-2 text-sm text-light font-body">
-							kg
-						</label>
-					</div>
+					<input
+						type="text"
+						id="quantity"
+						className="bg-zinc-50 border border-zinc-300 text-zinc-900 text-right text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-[80px] p-2 md:p-1 dark:bg-zinc-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mr-2 leading-6"
+						onChange={handleQuantityChange}
+						onFocus={handleFocus}
+					/>
 
-					<div className="flex items-center custom-radio-container">
-						<input
-							type="radio"
-							id={`${product.slug}-un`}
-							name="unit"
-							value="un"
-							checked={chosenUnit === "un"}
-							onChange={handleRadioButton}
-						/>
-						<span className="radio-checkmark"></span>
-						<label htmlFor={`${product.slug}-un`} className="pl-1 text-sm text-light font-body">
-							un
-						</label>
+					<div className="flex">
+						<div className="flex items-center custom-radio-container mr-1">
+							<input
+								type="radio"
+								id={`${product.slug}-kg`}
+								name="unit"
+								value="kg"
+								checked={chosenUnit === "kg"}
+								onChange={handleRadioButton}
+							/>
+							<span className="radio-checkmark"></span>
+							<label htmlFor={`${product.slug}-kg`} className="pl-1 mr-2 text-sm text-light font-body">
+								kg
+							</label>
+						</div>
 
-						<button
-							type="button"
-							className="ml-6 text-white border bg-green-500 border-green-500 hover:bg-green-600 hover:text-white focus:ring-4 rounded w-[40px] h-[40px] inline-flex items-center shrink-0 focus:outline-none focus:ring-blue-300 flex justify-center"
-							onClick={handleAddToCart}
-						>
-							<Image className="relative" src="/img/icon-plus.svg" alt="" width={16} height={16} priority />
-						</button>
+						<div className="flex items-center custom-radio-container">
+							<input
+								type="radio"
+								id={`${product.slug}-un`}
+								name="unit"
+								value="un"
+								checked={chosenUnit === "un"}
+								onChange={handleRadioButton}
+							/>
+							<span className="radio-checkmark"></span>
+							<label htmlFor={`${product.slug}-un`} className="pl-1 text-sm text-light font-body">
+								un
+							</label>
+						</div>
 					</div>
 				</div>
+
+				<button
+					type="button"
+					className="text-white border bg-green-500 border-green-500 hover:bg-green-600 hover:text-white focus:ring-4 rounded w-full md:w-[40px] h-[45px] md:h-[40px] inline-flex items-center shrink-0 focus:outline-none focus:ring-blue-300 flex justify-center mt-4 md:mt-0 md:ml-6 "
+					onClick={handleAddToCart}
+				>
+					Adicionar
+				</button>
 			</div>
 		</form>
 	);

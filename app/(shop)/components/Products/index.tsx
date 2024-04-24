@@ -16,10 +16,8 @@ type ProductsProps = {
 
 const Products = ({ products }: ProductsProps) => {
 	return (
-		<div>
-			<div className="flex flex-col" role="table">
-				{products && products.map((product, index) => <ItemRow key={`prod-${index}`} product={product} />)}
-			</div>
+		<div className="flex flex-col" role="table">
+			{products && products.map((product, index) => <ItemRow key={`prod-${index}`} product={product} />)}
 		</div>
 	);
 };
