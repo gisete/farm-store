@@ -79,7 +79,7 @@ const ItemRow = ({ product }) => {
 	return (
 		<form className="grid border-b border-zinc-100 grid-cols-5 md:grid-cols-4 py-3 md:py-2 font-body" role="rowgroup">
 			<div className="col-span-4 md:col-span-2 flex flex-col mb-2 md:mb-0" role="cell">
-				<div> {product.name}</div>
+				<div className="text-lg md:text-base"> {product.name}</div>
 				{product.description && (
 					<div>
 						<span className="font-light">{`${product.description}`}</span>
@@ -138,7 +138,7 @@ const ItemRow = ({ product }) => {
 
 				<button
 					type="button"
-					className="text-white border bg-green-500 border-green-500 hover:bg-green-600 hover:text-white focus:ring-4 rounded w-full md:w-[40px] h-[45px] md:h-[40px] inline-flex items-center shrink-0 focus:outline-none focus:ring-blue-300 flex justify-center mt-4 md:mt-0 md:ml-6 "
+					className="text-black border bg-[#C8EE7B] focus:ring-4 rounded w-full md:w-[40px] h-[45px] md:h-[40px] inline-flex items-center shrink-0 focus:outline-none focus:ring-blue-300 flex justify-center mt-4 md:mt-0 md:ml-6 "
 					onClick={handleAddToCart}
 				>
 					Adicionar
