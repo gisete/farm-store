@@ -39,7 +39,7 @@ const Cart = ({ hideButton }: CartProps) => {
 					isCartOpen ? "cart-open" : ""
 				}`}
 			>
-				<div className="pt-16 md:pt-6 p-6 flex flex-col">
+				<div className="pt-20 md:pt-6 p-6 flex flex-col">
 					<h2 className="text-center text-lg mb-6">Cabaz</h2>
 
 					<button
