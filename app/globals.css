@@ -66,3 +66,17 @@ body {
 	border-radius: 50%;
 	background: #10b981;
 }
+
+.cart-closed {
+	transition: transform 0.3s ease, width 0.3s ease;
+}
+
+@media (min-width: 768px) {
+	.cart-closed {
+		transition: none;
+	}
+}
+
+.cart-open {
+	transform: translateX(0);
+}

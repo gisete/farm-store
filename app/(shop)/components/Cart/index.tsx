@@ -4,6 +4,7 @@ import { useContext, useState, useEffect } from "react";
 import { CartContext } from "../../providers/CartProvider";
 import CartItem from "./CartItem";
 import ContactForm from "../ContactForm";
+import Image from "next/image";
 
 type CartProps = {
 	hideButton: boolean;
@@ -11,6 +12,7 @@ type CartProps = {
 
 const Cart = ({ hideButton }: CartProps) => {
 	const { cart, cartTotal, showContactForm, setShowContactForm, orderSent } = useContext(CartContext);
+	const [isCartOpen, setCartOpen] = useState(false);
 
 	const [formValues, setFormValues] = useState({
 		id: "",
@@ -31,53 +33,66 @@ const Cart = ({ hideButton }: CartProps) => {
 	}, [cart]);
 
 	return (
-		<div className="w-100">
-			<div className="p-6 flex flex-col">
-				<h2 className="text-center text-lg mb-6">Cabaz</h2>
-				<ul>
-					{cart.map((item, index) => (
-						<CartItem item={item} key={`cartitem-${index}`} />
-					))}
-				</ul>
+		<>
+			<div
+				className={`bg-white w-full fixed md:w-100 md:static top-0 bottom-0 right-0 translate-x-full md:transform-none cart-closed ${
+					isCartOpen ? "cart-open" : ""
+				}`}
+			>
+				<div className="p-6 flex flex-col">
+					<h2 className="text-center text-lg mb-6">Cabaz</h2>
+					<ul>
+						{cart.map((item, index) => (
+							<CartItem item={item} key={`cartitem-${index}`} />
+						))}
+					</ul>
 
-				{orderSent && <p className="text-center">Encomenda enviada com sucesso</p>}
+					{orderSent && <p className="text-center">Encomenda enviada com sucesso</p>}
 
-				{cart.length === 0 && !orderSent && <p className="text-center">O cabaz está vazio</p>}
+					{cart.length === 0 && !orderSent && <p className="text-center">O cabaz está vazio</p>}
 
-				{cart.length > 0 && !orderSent && (
-					<>
-						<div className="mt-6">
-							<label
-								className="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2"
-								htmlFor="comment"
-							>
-								Comentário
-							</label>
-							<textarea
-								name="comment"
-								className="block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3"
-								form="usrform"
-								id="comment"
-								onChange={(e) => setFormValues({ ...formValues, comment: e.target.value })}
-							></textarea>
-						</div>
-
-						{showContactForm && <ContactForm formValues={formValues} setFormValues={setFormValues} />}
-
-						{showContactForm ? null : (
-							<div className="text-center mt-8">
-								<button
-									className="px-6 py-3 bg-zinc-100 text-black border border-zinc-500 font-body hover:bg-zinc-200 transition"
-									onClick={() => setShowContactForm(true)}
+					{cart.length > 0 && !orderSent && (
+						<>
+							<div className="mt-6">
+								<label
+									className="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2"
+									htmlFor="comment"
 								>
-									Confirmar encomenda
-								</button>
+									Comentário
+								</label>
+								<textarea
+									name="comment"
+									className="block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3"
+									form="usrform"
+									id="comment"
+									onChange={(e) => setFormValues({ ...formValues, comment: e.target.value })}
+								></textarea>
 							</div>
-						)}
-					</>
-				)}
+
+							{showContactForm && <ContactForm formValues={formValues} setFormValues={setFormValues} />}
+
+							{showContactForm ? null : (
+								<div className="text-center mt-8">
+									<button
+										className="px-6 py-3 bg-zinc-100 text-black border border-zinc-500 font-body hover:bg-zinc-200 transition"
+										onClick={() => setShowContactForm(true)}
+									>
+										Confirmar encomenda
+									</button>
+								</div>
+							)}
+						</>
+					)}
+				</div>
 			</div>
-		</div>
+			<button
+				className="fixed top-4 right-0 bg-orange-500 text-white active:bg-red-600 px-6 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+				type="button"
+				onClick={() => setCartOpen(!isCartOpen)}
+			>
+				<Image src="/img/icon-basket.png" width={40} height={40} alt="Picture of the author" />
+			</button>
+		</>
 	);
 };
 
