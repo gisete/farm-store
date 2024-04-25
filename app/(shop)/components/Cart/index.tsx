@@ -104,10 +104,16 @@ const Cart = ({ hideButton }: CartProps) => {
 				</div>
 			</div>
 			<button
-				className="fixed w-20 h-20 top-4 right-0 bg-orange-300 text-white active:bg-orange-500 px-6 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+				className="fixed w-20 h-20 top-5 right-2 bg-orange-300 text-white active:bg-orange-500 px-6 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
 				type="button"
 				onClick={() => setCartOpen(true)}
 			>
+				{formValues.products.length > 0 && (
+					<div className="absolute bg-red-500 rounded-full w-8 h-8 px-3 py-1 right-0 -top-1">
+						{formValues.products.length}
+					</div>
+				)}
+
 				<Image src="/img/icon-basket.png" width={40} height={40} alt="Picture of the author" />
 			</button>
 		</>
