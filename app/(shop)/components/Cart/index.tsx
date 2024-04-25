@@ -44,7 +44,7 @@ const Cart = ({ hideButton }: CartProps) => {
 
 					<button
 						type="button"
-						className="bg-zinc-100 absolute top-4 right-4 p-4 inline-flex items-center justify-center text-black focus:outline-none focus:ring-2 focus:ring-inset w-[50px] h-[50px] rounded-full"
+						className="bg-zinc-100 absolute top-4 right-6 p-4 inline-flex items-center justify-center text-black focus:outline-none focus:ring-2 focus:ring-inset w-[55px] h-[55px] rounded-full"
 						onClick={() => setCartOpen(false)}
 					>
 						<span className="sr-only">Close menu</span>
