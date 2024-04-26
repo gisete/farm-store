@@ -11,8 +11,8 @@ type CartProps = {
 };
 
 const Cart = ({ hideButton }: CartProps) => {
-	const { cart, cartTotal, showContactForm, setShowContactForm, orderSent } = useContext(CartContext);
-	const [isCartOpen, setCartOpen] = useState(false);
+	const { cart, cartTotal, showContactForm, setShowContactForm, orderSent, isCartOpen, setCartOpen } =
+		useContext(CartContext);
 
 	const [formValues, setFormValues] = useState({
 		id: "",
@@ -35,7 +35,7 @@ const Cart = ({ hideButton }: CartProps) => {
 	return (
 		<>
 			<div
-				className={`bg-white w-full fixed md:w-100 md:static top-0 bottom-0 right-0 translate-x-full md:transform-none cart-closed z-10 ${
+				className={`bg-white w-full fixed md:w-100 md:static top-0 bottom-0 right-0 translate-x-full md:transform-none cart-closed z-10 overflow-scroll ${
 					isCartOpen ? "cart-open" : ""
 				}`}
 			>

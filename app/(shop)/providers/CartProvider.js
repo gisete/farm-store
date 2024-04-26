@@ -8,6 +8,7 @@ function CartProvider({ children }) {
 	const [showContactForm, setShowContactForm] = useState(false);
 	const [cartTotal, setCartTotal] = useState(0);
 	const [orderSent, setOrderSent] = useState(false);
+	const [isCartOpen, setCartOpen] = useState(false);
 
 	function clearCart() {
 		setCart([]);
@@ -23,6 +24,16 @@ function CartProvider({ children }) {
 			setCart(newCart);
 		}
 	}
+
+	useEffect(() => {
+		const getBodyElement = document.querySelector("body");
+
+		if (isCartOpen) {
+			getBodyElement.style.overflow = "hidden";
+		} else {
+			getBodyElement.style.overflow = "auto";
+		}
+	}, [isCartOpen]);
 
 	useEffect(() => {
 		const cartTotal = cart.reduce((acc, item) => acc + item.subTotal, 0);
@@ -50,6 +61,8 @@ function CartProvider({ children }) {
 		setShowContactForm,
 		orderSent,
 		setOrderSent,
+		setCartOpen,
+		isCartOpen,
 	};
 
 	return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
