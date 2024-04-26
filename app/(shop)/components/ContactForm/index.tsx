@@ -10,6 +10,7 @@ import updateGoogleSpreadsheet from "@/lib/googleSpreadsheet";
 const ContactForm = ({ formValues, setFormValues }) => {
 	const { cart, cartTotal, clearCart, showContactForm, setShowContactForm, setOrderSent } = useContext(CartContext);
 	const [hasError, setHasError] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const handleFormChange = (e) => {
 		const id = e.target.id;
@@ -50,22 +51,25 @@ const ContactForm = ({ formValues, setFormValues }) => {
 
 	async function sendOrder() {
 		// createOrder(formValues);
-		console.log(formValues);
+
 		updateGoogleSpreadsheet(formValues)
 			.then(() => {
 				console.log("Success");
+				setIsLoading(false);
+				setShowContactForm(false);
+				setOrderSent(true);
+				clearCart();
 			})
 			.catch((error) => {
 				console.error(error);
 				setHasError(true);
+				setIsLoading(false);
 			});
-		// setShowContactForm(false);
-		// setOrderSent(true);
-		// clearCart();
 	}
 
 	const handleFormSubmit = async (e) => {
 		e.preventDefault();
+		setIsLoading(true);
 		sendOrder();
 	};
 
@@ -108,8 +112,17 @@ const ContactForm = ({ formValues, setFormValues }) => {
 					</div>
 				</div>
 
-				<button className="px-6 py-4 bg-zinc-800 text-white rounded font-body mt-4 text-base" type="submit">
-					Enviar encomenda
+				<button
+					className={`px-6 py-4 text-white rounded font-body mt-4 text-base flex justify-center ${
+						isLoading ? "bg-zinc-400" : "bg-zinc-800"
+					}`}
+					disabled={isLoading}
+					type="submit"
+				>
+					{isLoading && (
+						<div className="h-5 w-5 border-t-transparent border-solid animate-spin rounded-full border-white border-4 mr-4 "></div>
+					)}
+					{isLoading ? "Enviando..." : "Enviar encomenda"}
 				</button>
 
 				{hasError && <p className="text-red-500 text-center mt-4">Ocorreu um erro, por favor tente novamente</p>}
