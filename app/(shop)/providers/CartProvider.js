@@ -9,6 +9,7 @@ function CartProvider({ children }) {
 	const [cartTotal, setCartTotal] = useState(0);
 	const [orderSent, setOrderSent] = useState(false);
 	const [isCartOpen, setCartOpen] = useState(false);
+	const [hasError, setHasError] = useState(false);
 
 	function clearCart() {
 		setCart([]);
@@ -63,6 +64,8 @@ function CartProvider({ children }) {
 		setOrderSent,
 		setCartOpen,
 		isCartOpen,
+		setHasError,
+		hasError,
 	};
 
 	return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

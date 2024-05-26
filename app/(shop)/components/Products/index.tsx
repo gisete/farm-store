@@ -10,6 +10,7 @@ type ProductsProps = {
 			price: number;
 			unit: string;
 			slug: string;
+			isProductActive: boolean;
 		}
 	];
 };
@@ -17,7 +18,10 @@ type ProductsProps = {
 const Products = ({ products }: ProductsProps) => {
 	return (
 		<div className="flex flex-col" role="table">
-			{products && products.map((product, index) => <ItemRow key={`prod-${index}`} product={product} />)}
+			{products &&
+				products
+					.filter((product) => product.isProductActive)
+					.map((product, index) => <ItemRow key={`prod-${index}`} product={product} />)}
 		</div>
 	);
 };

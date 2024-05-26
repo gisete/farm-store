@@ -12,7 +12,7 @@ type CartProps = {
 };
 
 const Cart = ({ hideButton }: CartProps) => {
-	const { cart, cartTotal, showContactForm, setShowContactForm, orderSent, isCartOpen, setCartOpen } =
+	const { cart, cartTotal, showContactForm, setShowContactForm, isCartOpen, setCartOpen, hasError, orderSent } =
 		useContext(CartContext);
 
 	const [formValues, setFormValues] = useState({
@@ -104,7 +104,7 @@ const Cart = ({ hideButton }: CartProps) => {
 					</div>
 				)}
 
-				{orderSent && <ConfirmationWindow orderSent={orderSent} />}
+				{orderSent && <ConfirmationWindow orderSent={orderSent} hasError={hasError} />}
 			</div>
 
 			<button

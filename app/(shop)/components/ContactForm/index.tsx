@@ -8,8 +8,8 @@ import { set } from "firebase/database";
 import updateGoogleSpreadsheet from "@/lib/googleSpreadsheet";
 
 const ContactForm = ({ formValues, setFormValues }) => {
-	const { cart, cartTotal, clearCart, showContactForm, setShowContactForm, setOrderSent } = useContext(CartContext);
-	const [hasError, setHasError] = useState(false);
+	const { cart, cartTotal, clearCart, showContactForm, setShowContactForm, setOrderSent, hasError, setHasError } =
+		useContext(CartContext);
 	const [isLoading, setIsLoading] = useState(false);
 
 	const handleFormChange = (e) => {
