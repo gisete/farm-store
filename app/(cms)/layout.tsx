@@ -33,11 +33,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 						<LogoutButton />
 
 						<div className="flex">
-							<aside className="w-64 h-screen ">
+							<aside className="w-64 min-h-lvh h-full">
 								<SidePanel />
 							</aside>
 
-							<main className="h-screen flex-1 pb-8 pr-8">
+							<main className="min-h-lvh h-full flex-1 pb-8 pr-8">
 								<div className="bg-white min-h-full px-12 py-16">{children}</div>
 							</main>
 						</div>

@@ -7,7 +7,6 @@ import Notification from "../../components/Notification";
 import ProductForm from "../../components/ProductForm";
 import useSaveProduct from "../../hooks/useSaveProduct";
 import useGetProducts from "../../hooks/useGetProducts";
-import { get } from "http";
 
 type CategoryState = string[];
 
@@ -72,7 +71,12 @@ export default function AddProduct() {
 	const handleFormChange = (e: React.ChangeEvent<any>): void => {
 		const id = e.target.id;
 		const newValue = getInputValue(e);
-		const productSlug = formValues.name.toLowerCase().replace(/\s+/g, "-");
+		// removes empty space and accents and other characters
+		const productSlug = formValues.name
+			.toLowerCase()
+			.replace(/\s+/g, "-")
+			.normalize("NFD")
+			.replace(/\p{Diacritic}/gu, "");
 		const productQuantity = formValues.priceUnit;
 
 		setFormValues({
