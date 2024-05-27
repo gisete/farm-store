@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import useSaveProduct from "../../../hooks/useSaveProduct";
 import Notification from "../../../components/Notification";
 import ProductForm from "../../../components/ProductForm";
+import { getCategories } from "@/lib/firebase";
 
 export default function EditProduct({ product }) {
 	const [categoryData, setData] = useState([]);
@@ -46,6 +47,17 @@ export default function EditProduct({ product }) {
 			toast.success("Product updated");
 		}
 	};
+
+	useEffect(() => {
+		getCategories()
+			.then(({ data }) => {
+				if (!data) return;
+				setData(data);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	}, []);
 
 	return (
 		<section>

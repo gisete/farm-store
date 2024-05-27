@@ -17,12 +17,20 @@ type ProductsProps = {
 
 const Products = ({ products }: ProductsProps) => {
 	return (
-		<div className="flex flex-col" role="table">
+		<>
+			<div className="flex flex-col" role="table">
+				{products &&
+					products
+						.filter((product) => product.isProductActive)
+						.map((product, index) => <ItemRow key={`prod-${index}`} product={product} />)}
+			</div>
+
+			<h2>Produtores Amigos</h2>
 			{products &&
 				products
 					.filter((product) => product.isProductActive)
 					.map((product, index) => <ItemRow key={`prod-${index}`} product={product} />)}
-		</div>
+		</>
 	);
 };
 

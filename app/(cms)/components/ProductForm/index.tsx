@@ -80,7 +80,7 @@ export default function ProductForm({
 							{categoryData &&
 								categoryData.map((category) => {
 									return (
-										<option key={category.slug} value={category.name}>
+										<option key={category.slug} value={category.name} selected={category.name === formValues.category}>
 											{category.name}
 										</option>
 									);
