@@ -1,6 +1,10 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Products from "../components/Products";
 import Cart from "../components/Cart";
-import { getProducts } from "@lib/firebase";
+import useGetProducts from "../hooks/useGetProducts";
+import LoadingProducts from "../components/LoadingProducts";
 
 type ProductsProps = {
 	products: [
@@ -15,18 +19,22 @@ type ProductsProps = {
 	];
 };
 
-async function getMyProducts() {
-	const res = await getProducts();
-	return res;
-}
+export default function Home() {
+	const [products, setProducts] = useState([]);
+	const { allProducts, getAllProducts } = useGetProducts();
 
-export default async function Home() {
-	const { data }: ProductsProps | any = await getMyProducts();
+	useEffect(() => {
+		getAllProducts();
+	}, []);
+
+	useEffect(() => {
+		setProducts(allProducts);
+	}, [allProducts]);
 
 	return (
 		<div className="flex flex-col lg:flex-row">
 			<div className="p-3 md:p-6 flex-[2.5]  md:border-r border-black">
-				{!data || data.length === 0 ? <p>No products found.</p> : <Products products={data} />}
+				{!products || products.length === 0 ? <LoadingProducts /> : <Products products={products} />}
 			</div>
 
 			<div className="flex-1">

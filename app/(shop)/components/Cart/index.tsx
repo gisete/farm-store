@@ -87,18 +87,7 @@ const Cart = ({ hideButton }: CartProps) => {
 									></textarea>
 								</div>
 
-								{showContactForm && <ContactForm formValues={formValues} setFormValues={setFormValues} />}
-
-								{showContactForm ? null : (
-									<div className="text-center mt-8">
-										<button
-											className="px-6 py-3 bg-zinc-100 text-black border border-zinc-500 font-body hover:bg-zinc-200 transition"
-											onClick={() => setShowContactForm(true)}
-										>
-											Confirmar encomenda
-										</button>
-									</div>
-								)}
+								<ContactForm formValues={formValues} setFormValues={setFormValues} />
 							</>
 						)}
 					</div>
