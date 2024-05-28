@@ -42,7 +42,7 @@ const Cart = ({ hideButton }: CartProps) => {
 			>
 				<button
 					type="button"
-					className="bg-zinc-100 absolute top-4 right-6 p-4 inline-flex items-center justify-center text-black focus:outline-none focus:ring-2 focus:ring-inset w-[55px] h-[55px] rounded-full"
+					className="bg-zinc-100 absolute top-4 right-6 p-4 inline-flex items-center justify-center text-black focus:outline-none focus:ring-2 focus:ring-inset w-[55px] h-[55px] rounded-full md:hidden"
 					onClick={() => setCartOpen(false)}
 				>
 					<span className="sr-only">Close menu</span>
@@ -108,7 +108,7 @@ const Cart = ({ hideButton }: CartProps) => {
 			</div>
 
 			<button
-				className="fixed w-20 h-20 top-5 right-2 bg-orange-300 text-white active:bg-orange-500 px-6 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+				className="fixed w-20 h-20 top-5 right-2 bg-orange-300 text-white active:bg-orange-500 px-6 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 md:hidden"
 				type="button"
 				onClick={() => setCartOpen(true)}
 			>

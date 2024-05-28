@@ -77,7 +77,7 @@ const ItemRow = ({ product }) => {
 	}
 
 	return (
-		<form className="grid border-b border-zinc-100 grid-cols-5 md:grid-cols-4 py-3 md:py-2 font-body" role="rowgroup">
+		<form className="grid border-b border-zinc-100 grid-cols-5 md:grid-cols-5 py-3 md:py-2 font-body" role="rowgroup">
 			<div className="col-span-4 md:col-span-2 flex flex-col mb-2 md:mb-0" role="cell">
 				<div className="text-lg"> {product.name}</div>
 				{product.description && (
@@ -90,7 +90,7 @@ const ItemRow = ({ product }) => {
 				className="col-start-5 md:col-auto col-span-2 md:col-span-1 flex md:items-center justify-self-end md:justify-self-auto"
 				role="cell"
 			>
-				€{productPrice.toLocaleString("pt")}/{productUnit}
+				€{productPrice.toLocaleString("pt")}/{productUnit === "kg" ? "kg" : "unidade"}
 			</div>
 
 			<div className="col-span-5 md:col-span-1 flex mt-2 md:mt-0 mb-2 md:mb-0 flex-col md:flex-row" role="cell">
@@ -138,10 +138,10 @@ const ItemRow = ({ product }) => {
 
 				<button
 					type="button"
-					className="text-black border bg-[#C8EE7B] focus:ring-4 rounded w-full md:w-[40px] h-[45px] md:h-[40px] inline-flex items-center shrink-0 text-sm tracking-wide focus:outline-none focus:ring-blue-300 flex justify-center mt-4 md:mt-0 md:ml-6 uppercase"
+					className="text-white bg-amber-500 focus:ring-4 rounded w-full md:w-[130px] h-[45px] md:h-[40px] inline-flex items-center shrink-0 text-sm tracking-wide focus:outline-none focus:ring-blue-300 flex justify-center mt-4 md:mt-0 md:ml-6 uppercase"
 					onClick={handleAddToCart}
 				>
-					+
+					Adicionar
 				</button>
 			</div>
 		</form>
