@@ -22,12 +22,18 @@ body {
 
 .radio-checkmark {
 	position: absolute;
-	top: 19px;
+	top: 14px;
 	left: 0;
 	height: 14px;
 	width: 14px;
 	background-color: #ececec;
 	border-radius: 50%;
+}
+
+@media (min-width: 768px) {
+	.radio-checkmark {
+		top: 19px;
+	}
 }
 
 .custom-radio-container label {
@@ -79,4 +85,16 @@ body {
 
 .cart-open {
 	transform: translateX(0);
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+	-moz-appearance: textfield;
 }

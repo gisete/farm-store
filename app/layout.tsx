@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
-		<html lang="en">
+		<html lang="en-150">
 			<body className={`${lato.variable}`}>{children}</body>
 		</html>
 	);

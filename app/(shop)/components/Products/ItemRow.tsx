@@ -43,18 +43,17 @@ const ItemRow = ({ product }) => {
 
 	function handleQuantityChange(e: any) {
 		if (isNaN(e.target.value)) return;
-		const parsedValue = parseFloat(e.target.value.replace(/,/, "."));
 		setQuantity(e.target.value);
-		const calculatedSubtotal = product.priceUnit ? product.priceUnit * parsedValue : 0;
+		console.log(e.target.value);
 
 		setOrder({
 			...order,
-			quantity: parsedValue,
-			subTotal: calculatedSubtotal,
+			quantity: e.target.value,
 		});
 	}
 
-	function handleAddToCart() {
+	function handleAddToCart(event: any) {
+		event.preventDefault();
 		if (productExistsInCart()) {
 			const updatedCart = cart.map((item) => {
 				if (item.name === order.name) {
@@ -96,9 +95,10 @@ const ItemRow = ({ product }) => {
 			<div className="col-span-5 md:col-span-1 flex mt-2 md:mt-0 mb-2 md:mb-0 flex-col md:flex-row" role="cell">
 				<div className="flex">
 					<input
-						type="text"
+						type="number"
+						lang="en-150"
 						id="quantity"
-						className="bg-zinc-50 border border-zinc-300 text-zinc-900 text-right text-body rounded focus:ring-blue-500 focus:border-blue-500 block w-[90px] md:w-[70px] p-2 md:p-1 dark:bg-zinc-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mr-2 leading-6"
+						className="bg-zinc-50 border border-zinc-300 text-zinc-900 text-right text-body rounded focus:ring-blue-500 focus:border-blue-500 block w-[90px] md:w-[70px] md:h-[52px] p-2 md:p-1 dark:bg-zinc-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mr-2 leading-6"
 						onChange={handleQuantityChange}
 						onFocus={handleFocus}
 					/>
@@ -137,8 +137,8 @@ const ItemRow = ({ product }) => {
 				</div>
 
 				<button
-					type="button"
-					className="text-white bg-amber-500 focus:ring-4 rounded w-full md:w-[130px] h-[45px] md:h-[40px] inline-flex items-center shrink-0 text-sm tracking-wide focus:outline-none focus:ring-blue-300 flex justify-center mt-4 md:mt-0 md:ml-6 uppercase"
+					type="submit"
+					className="text-white bg-amber-500 focus:ring-4 rounded w-full md:w-[130px] h-[45px] md:h-[40px] inline-flex items-center shrink-0 text-sm tracking-wide focus:outline-none focus:ring-blue-300 flex justify-center mt-4 md:mt-0 md:ml-4 uppercase"
 					onClick={handleAddToCart}
 				>
 					Adicionar

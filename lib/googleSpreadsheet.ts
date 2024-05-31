@@ -1,6 +1,5 @@
 import { GoogleSpreadsheet } from "google-spreadsheet";
 import { JWT } from "google-auth-library";
-import { rejects } from "assert";
 
 function createSingleSheetName(name: string) {
 	return name.replace(/\s/g, "_").toLowerCase();
@@ -27,7 +26,7 @@ export default async function updateGoogleSpreadsheet(formValues) {
 
 		const newSheet = await doc.addSheet({
 			title: sheetName,
-			headerValues: ["NOME", "DATA", "CONTACTO", "COMENTÁRIO", "PRODUTO", "QUANTIDADE", "UNIDADE", "SUBTOTAL"],
+			headerValues: ["NOME", "DATA", "CONTACTO", "COMENTÁRIO", "PRODUTO", "QUANTIDADE", "UNIDADE"],
 		});
 
 		await newSheet.addRow({
@@ -44,7 +43,6 @@ export default async function updateGoogleSpreadsheet(formValues) {
 				PRODUTO: product.name,
 				QUANTIDADE: product.quantity,
 				UNIDADE: product.unit,
-				SUBTOTAL: product.subTotal,
 			};
 		});
 

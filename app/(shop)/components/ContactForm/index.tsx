@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useContext } from "react";
 import { CartContext } from "../../providers/CartProvider";
-import { createOrder } from "@/lib/firebase";
+import { createOrder, createProductsTotal } from "@/lib/firebase";
 import { toast } from "react-hot-toast";
 import { set } from "firebase/database";
 import updateGoogleSpreadsheet from "@/lib/googleSpreadsheet";
@@ -51,10 +51,12 @@ const ContactForm = ({ formValues, setFormValues }) => {
 
 	async function sendOrder() {
 		// createOrder(formValues);
+		// createProductsTotal(cart);
 
 		updateGoogleSpreadsheet(formValues)
 			.then(() => {
 				console.log("Success");
+				createProductsTotal(cart);
 				setIsLoading(false);
 				setShowContactForm(false);
 				setOrderSent(true);
