@@ -33,7 +33,7 @@ export default function Home() {
 
 	return (
 		<div className="flex flex-col lg:flex-row">
-			<div className="p-3 md:p-6 md:pt-10 flex-[2.5]  md:border-r border-black">
+			<div className="p-3 pt-6 md:p-6 md:pt-10 flex-[2.5]  md:border-r border-black">
 				{!products || products.length === 0 ? <LoadingProducts /> : <Products products={products} />}
 			</div>
 
