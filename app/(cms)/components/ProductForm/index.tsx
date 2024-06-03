@@ -12,6 +12,7 @@ type FormValuesType = {
 	isProductActive: boolean;
 	slug: string;
 	position: number;
+	category: string;
 };
 
 type ProductFormProps = {

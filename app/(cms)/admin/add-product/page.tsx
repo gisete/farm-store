@@ -28,6 +28,7 @@ export default function AddProduct() {
 		isProductActive: true,
 		slug: "",
 		position: 0,
+		category: "producao-propria",
 	};
 
 	const [formValues, setFormValues] = useState(initialFormValues);

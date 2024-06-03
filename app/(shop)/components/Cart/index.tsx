@@ -58,8 +58,8 @@ const Cart = ({ hideButton }: CartProps) => {
 				</button>
 
 				{!orderSent && (
-					<div className="pt-20 md:pt-6 p-6 flex flex-col">
-						<h2 className="text-center text-xl mb-6">Cabaz</h2>
+					<div className="pt-20 md:pt-10 p-6 flex flex-col">
+						<h2 className="text-center text-lg mb-6 uppercase tracking-wide font-semibold">Cabaz</h2>
 
 						<ul>
 							{cart.map((item, index) => (

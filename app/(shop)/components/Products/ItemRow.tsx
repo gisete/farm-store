@@ -78,7 +78,7 @@ const ItemRow = ({ product }) => {
 	return (
 		<form className="grid border-b border-zinc-100 grid-cols-5 md:grid-cols-5 py-3 md:py-2 font-body" role="rowgroup">
 			<div className="col-span-4 md:col-span-2 flex flex-col mb-2 md:mb-0" role="cell">
-				<div className="text-lg"> {product.name}</div>
+				<div className="text-lg md:text-base"> {product.name}</div>
 				{product.description && (
 					<div>
 						<span className="text-zinc-400">{`${product.description}`}</span>

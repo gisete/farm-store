@@ -10,12 +10,17 @@ const AddCategoryForm = () => {
 
 	const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const id = e.target.id;
-		const productSlug = e.target.value.toLowerCase().replace(/\s+/g, "-");
+		// removes empty space and accents and other characters
+		const categorySlug = formValues.name
+			.toLowerCase()
+			.replace(/\s+/g, "-")
+			.normalize("NFD")
+			.replace(/\p{Diacritic}/gu, "");
 
 		setFormValues({
 			...formValues,
 			[id]: e.target.value,
-			slug: productSlug,
+			slug: categorySlug,
 		});
 	};
 

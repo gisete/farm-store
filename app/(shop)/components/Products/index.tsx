@@ -10,6 +10,7 @@ type ProductsProps = {
 			price: number;
 			unit: string;
 			slug: string;
+			category: string;
 			isProductActive: boolean;
 		}
 	];
@@ -18,10 +19,19 @@ type ProductsProps = {
 const Products = ({ products }: ProductsProps) => {
 	return (
 		<>
+			<h2 className="text-lg uppercase mb-2 tracking-wide font-semibold">Produção Própria</h2>
 			<div className="flex flex-col" role="table">
 				{products &&
 					products
-						.filter((product) => product.isProductActive)
+						.filter((product) => product.isProductActive && product.category !== "Parceiros")
+						.map((product, index) => <ItemRow key={`prod-${index}`} product={product} />)}
+			</div>
+
+			<h2 className="text-lg mt-8 mb-2 uppercase tracking-wide font-semibold">Parceiros</h2>
+			<div className="flex flex-col" role="table">
+				{products &&
+					products
+						.filter((product) => product.isProductActive && product.category === "Parceiros")
 						.map((product, index) => <ItemRow key={`prod-${index}`} product={product} />)}
 			</div>
 		</>
