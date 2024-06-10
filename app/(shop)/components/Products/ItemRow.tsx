@@ -37,6 +37,18 @@ const ItemRow = ({ product }) => {
 		event.target.select();
 	}
 
+	function calculateProductSubtotal(e) {
+		const parsedValue = parseFloat(e.target.value.replace(/,/, "."));
+		let calculatedSubtotal = productPrice * parsedValue;
+
+		//if the unit chosen is UN and the default unit is KG, subtotal is not calculated
+		if (chosenUnit === "un" && productUnit === "kg") {
+			calculatedSubtotal = 0;
+		}
+
+		return calculatedSubtotal.toFixed(2);
+	}
+
 	function productExistsInCart() {
 		return cart.some((item) => item.name === order.name);
 	}
@@ -44,11 +56,12 @@ const ItemRow = ({ product }) => {
 	function handleQuantityChange(e: any) {
 		if (isNaN(e.target.value)) return;
 		setQuantity(e.target.value);
-		console.log(e.target.value);
+		const calculatedSubtotal = calculateProductSubtotal(e);
 
 		setOrder({
 			...order,
 			quantity: e.target.value,
+			subTotal: calculatedSubtotal,
 		});
 	}
 

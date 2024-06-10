@@ -55,7 +55,6 @@ const ContactForm = ({ formValues, setFormValues }) => {
 
 		updateGoogleSpreadsheet(formValues)
 			.then(() => {
-				console.log("Success");
 				createProductsTotal(cart);
 				setIsLoading(false);
 				setShowContactForm(false);

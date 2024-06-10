@@ -26,7 +26,7 @@ export default async function updateGoogleSpreadsheet(formValues) {
 
 		const newSheet = await doc.addSheet({
 			title: sheetName,
-			headerValues: ["NOME", "DATA", "CONTACTO", "COMENTÁRIO", "PRODUTO", "QUANTIDADE", "UNIDADE"],
+			headerValues: ["NOME", "DATA", "CONTACTO", "COMENTÁRIO", "PRODUTO", "PREÇO", "QUANTIDADE", "UNIDADE", "SUBTOTAL"],
 		});
 
 		await newSheet.addRow({
@@ -41,8 +41,10 @@ export default async function updateGoogleSpreadsheet(formValues) {
 		const formatedProducts = formValues.products.map((product) => {
 			return {
 				PRODUTO: product.name,
-				QUANTIDADE: product.quantity,
+				PREÇO: product.price.toLocaleString("pt-PT", { style: "currency", currency: "EUR" }),
+				QUANTIDADE: product.quantity.replace(/\./g, ","),
 				UNIDADE: product.unit,
+				SUBTOTAL: product.subTotal.replace(/\./g, ","),
 			};
 		});
 
