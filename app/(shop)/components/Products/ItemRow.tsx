@@ -2,7 +2,6 @@
 import { useState, useContext } from "react";
 import Image from "next/image";
 import { CartContext } from "../../providers/CartProvider";
-import { set } from "firebase/database";
 
 const ItemRow = ({ product }) => {
 	const { cart, setCart } = useContext(CartContext);
@@ -38,7 +37,8 @@ const ItemRow = ({ product }) => {
 	}
 
 	function calculateProductSubtotal(e) {
-		const parsedValue = parseFloat(e.target.value.replace(/,/, "."));
+		const parsedValue = parseFloat(e.target.valueAsNumber);
+
 		let calculatedSubtotal = productPrice * parsedValue;
 
 		//if the unit chosen is UN and the default unit is KG, subtotal is not calculated
@@ -46,7 +46,7 @@ const ItemRow = ({ product }) => {
 			calculatedSubtotal = 0;
 		}
 
-		return calculatedSubtotal.toFixed(2);
+		return parseFloat(calculatedSubtotal.toFixed(2));
 	}
 
 	function productExistsInCart() {
@@ -55,12 +55,12 @@ const ItemRow = ({ product }) => {
 
 	function handleQuantityChange(e: any) {
 		if (isNaN(e.target.value)) return;
-		setQuantity(e.target.value);
+		setQuantity(e.target.valueAsNumber);
 		const calculatedSubtotal = calculateProductSubtotal(e);
 
 		setOrder({
 			...order,
-			quantity: e.target.value,
+			quantity: e.target.valueAsNumber,
 			subTotal: calculatedSubtotal,
 		});
 	}

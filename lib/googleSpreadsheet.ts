@@ -42,9 +42,9 @@ export default async function updateGoogleSpreadsheet(formValues) {
 			return {
 				PRODUTO: product.name,
 				PREÇO: product.price.toLocaleString("pt-PT", { style: "currency", currency: "EUR" }),
-				QUANTIDADE: product.quantity.replace(/\./g, ","),
+				QUANTIDADE: product.quantity.toLocaleString("PT-pt"),
 				UNIDADE: product.unit,
-				SUBTOTAL: product.subTotal.replace(/\./g, ","),
+				SUBTOTAL: product.subTotal.toLocaleString("PT-pt"),
 			};
 		});
 
