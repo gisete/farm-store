@@ -36,7 +36,7 @@ const Cart = ({ hideButton }: CartProps) => {
 	return (
 		<>
 			<div
-				className={`bg-white w-full fixed md:w-100 md:static top-0 bottom-0 right-0 translate-x-full md:transform-none cart-closed z-10 overflow-scroll ${
+				className={`bg-white w-full fixed md:w-100 md:static top-0 bottom-0 right-0 translate-x-full md:transform-none cart-closed z-10 overflow-scroll md:sticky top-0 ${
 					isCartOpen ? "cart-open" : ""
 				}`}
 			>

@@ -12,6 +12,8 @@ type ProductsProps = {
 			slug: string;
 			category: string;
 			isProductActive: boolean;
+			lowStock: boolean;
+			priceUnit: number;
 		}
 	];
 };

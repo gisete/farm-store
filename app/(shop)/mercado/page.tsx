@@ -37,7 +37,7 @@ export default function Home() {
 				{!products || products.length === 0 ? <LoadingProducts /> : <Products products={products} />}
 			</div>
 
-			<div className="flex-1">
+			<div className="flex-1 relative">
 				<Cart />
 			</div>
 		</div>

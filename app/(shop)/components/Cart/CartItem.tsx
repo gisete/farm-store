@@ -27,7 +27,7 @@ const CartItem = ({ item }) => {
 				}}
 				className="self-start pt-1"
 			>
-				<Image src="/img/icon-x-circle.svg" width={14} height={14} alt="" />
+				<Image src="/img/new-delete-icon.svg" width={18} height={18} alt="" />
 			</button>
 		</li>
 	);

@@ -91,7 +91,15 @@ const ItemRow = ({ product }) => {
 	return (
 		<form className="grid border-b border-zinc-100 grid-cols-5 md:grid-cols-5 py-3 md:py-2 font-body" role="rowgroup">
 			<div className="col-span-4 md:col-span-2 flex flex-col mb-2 md:mb-0" role="cell">
-				<div className="text-lg md:text-base"> {product.name}</div>
+				<div className="text-lg md:text-base">
+					{" "}
+					{product.name}
+					{product.lowStock && (
+						<div className="inline-flex items-center ml-2 px-3 py-1 text-gray-500 rounded gap-x-2 bg-gray-100/60 dark:bg-gray-800">
+							<span className="relative text-red-400 uppercase font-semibold text-xs pr-px">low stock</span>
+						</div>
+					)}
+				</div>
 				{product.description && (
 					<div>
 						<span className="text-zinc-400">{`${product.description}`}</span>
