@@ -4,9 +4,6 @@ import { useContext } from "react";
 import { CartContext } from "../../providers/CartProvider";
 
 const CartItem = ({ item }) => {
-	const formattedSubTotal = item.subTotal.toString().replace(".", ",");
-	const formattedQuantity = item.quantity.toString().replace(".", ",");
-
 	const { deleteFromCart } = useContext(CartContext);
 
 	return (
@@ -16,7 +13,7 @@ const CartItem = ({ item }) => {
 			</div>
 
 			<p className="mr-2">
-				{formattedQuantity}
+				{item.quantity}
 				<span className="text-sm">{item.unit} </span>
 			</p>
 

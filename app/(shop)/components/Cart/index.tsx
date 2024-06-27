@@ -12,8 +12,7 @@ type CartProps = {
 };
 
 const Cart = ({ hideButton }: CartProps) => {
-	const { cart, cartTotal, showContactForm, setShowContactForm, isCartOpen, setCartOpen, hasError, orderSent } =
-		useContext(CartContext);
+	const { cart, cartTotal, isCartOpen, setCartOpen, hasError, orderSent } = useContext(CartContext);
 
 	const [formValues, setFormValues] = useState({
 		id: "",

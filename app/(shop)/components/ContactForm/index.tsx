@@ -5,7 +5,7 @@ import { CartContext } from "../../providers/CartProvider";
 import { createOrder, createProductsTotal } from "@/lib/firebase";
 import { toast } from "react-hot-toast";
 import { set } from "firebase/database";
-import updateGoogleSpreadsheet from "@/lib/googleSpreadsheet";
+import sendOrderToSpreadsheet, { updateTotalSheet } from "@/lib/googleSpreadsheet";
 
 const ContactForm = ({ formValues, setFormValues }) => {
 	const { cart, cartTotal, clearCart, showContactForm, setShowContactForm, setOrderSent, hasError, setHasError } =
@@ -51,11 +51,15 @@ const ContactForm = ({ formValues, setFormValues }) => {
 
 	async function sendOrder() {
 		// createOrder(formValues);
-		// createProductsTotal(cart);
 
-		updateGoogleSpreadsheet(formValues)
+		//update orders total in Firebase
+		const productsTotal = await createProductsTotal(cart);
+
+		sendOrderToSpreadsheet(formValues)
 			.then(() => {
-				createProductsTotal(cart);
+				//if success update 1st googlesheet with order totals that you get from firebase
+				updateTotalSheet(productsTotal);
+
 				setIsLoading(false);
 				setShowContactForm(false);
 				setOrderSent(true);
