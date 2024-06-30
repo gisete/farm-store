@@ -119,6 +119,7 @@ const ItemRow = ({ product }) => {
 						type="number"
 						lang="en-150"
 						id="quantity"
+						min="0"
 						className="bg-zinc-50 border border-zinc-300 text-zinc-900 text-right text-body rounded focus:ring-blue-500 focus:border-blue-500 block w-[90px] md:w-[70px] md:h-[52px] p-2 md:p-1 dark:bg-zinc-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mr-2 leading-6"
 						onChange={handleQuantityChange}
 						onFocus={handleFocus}
