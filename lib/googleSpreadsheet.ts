@@ -27,7 +27,7 @@ export default async function sendOrderToSpreadsheet(formValues) {
 
 		const newSheet = await doc.addSheet({
 			title: sheetName,
-			headerValues: ["NOME", "DATA", "CONTACTO", "COMENTÁRIO", "PRODUTO", "PREÇO", "QUANTIDADE", "UNIDADE", "SUBTOTAL"],
+			headerValues: ["NOME", "DATA", "CONTACTO", "COMENTÁRIO", "PRODUTO", "QUANTIDADE", "UNIDADE", "PREÇO", "SUBTOTAL"],
 		});
 
 		await newSheet.addRow({
