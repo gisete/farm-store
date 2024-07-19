@@ -6,10 +6,16 @@ export const CartContext = createContext();
 function CartProvider({ children }) {
 	const [cart, setCart] = useState([]);
 	const [showContactForm, setShowContactForm] = useState(false);
-	const [cartTotal, setCartTotal] = useState(0);
 	const [orderSent, setOrderSent] = useState(false);
 	const [isCartOpen, setCartOpen] = useState(false);
 	const [hasError, setHasError] = useState(false);
+	const [isOrderSending, setIsOrderSending] = useState(false);
+	const [order, setOrder] = useState({
+		name: "",
+		phone: "",
+		comment: "",
+		products: cart,
+	});
 
 	function clearCart() {
 		setCart([]);
@@ -37,9 +43,6 @@ function CartProvider({ children }) {
 	}, [isCartOpen]);
 
 	useEffect(() => {
-		const cartTotal = cart.reduce((acc, item) => acc + item.subTotal, 0);
-		setCartTotal(cartTotal);
-
 		if (cart.length > 0) {
 			localStorage.setItem("cart", JSON.stringify(cart));
 		}
@@ -55,7 +58,6 @@ function CartProvider({ children }) {
 	const value = {
 		cart,
 		setCart,
-		cartTotal,
 		clearCart,
 		deleteFromCart,
 		showContactForm,
@@ -66,6 +68,10 @@ function CartProvider({ children }) {
 		isCartOpen,
 		setHasError,
 		hasError,
+		order,
+		setOrder,
+		isOrderSending,
+		setIsOrderSending,
 	};
 
 	return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

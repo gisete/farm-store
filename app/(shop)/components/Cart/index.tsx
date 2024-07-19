@@ -11,23 +11,21 @@ type CartProps = {
 	hideButton: boolean;
 };
 
-const Cart = ({ hideButton }: CartProps) => {
-	const { cart, cartTotal, isCartOpen, setCartOpen, hasError, orderSent } = useContext(CartContext);
+type ProductItem = {
+	id: string;
+	name: string;
+	quantity: number;
+	unit: string;
+	price: number;
+};
 
-	const [formValues, setFormValues] = useState({
-		id: "",
-		name: "",
-		phone: "",
-		comment: "",
-		products: cart,
-		total: cartTotal,
-		date: "",
-	});
+const Cart = ({ hideButton }: CartProps) => {
+	const { cart, cartTotal, order, setOrder, isCartOpen, setCartOpen, hasError, orderSent } = useContext(CartContext);
 
 	// for when the cart updates after getting localstorage values
 	useEffect(() => {
-		setFormValues({
-			...formValues,
+		setOrder({
+			...order,
 			products: cart,
 		});
 	}, [cart]);
@@ -61,8 +59,8 @@ const Cart = ({ hideButton }: CartProps) => {
 						<h2 className="text-center text-lg mb-6 uppercase tracking-wide font-semibold">Cabaz</h2>
 
 						<ul>
-							{cart.map((item, index) => (
-								<CartItem item={item} key={`cartitem-${index}`} />
+							{cart.map((productItem: ProductItem, index: number) => (
+								<CartItem item={productItem} key={`cartitem-${index}`} />
 							))}
 						</ul>
 
@@ -82,11 +80,11 @@ const Cart = ({ hideButton }: CartProps) => {
 										className="block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3"
 										form="usrform"
 										id="comment"
-										onChange={(e) => setFormValues({ ...formValues, comment: e.target.value })}
+										onChange={(e) => setOrder({ ...order, comment: e.target.value })}
 									></textarea>
 								</div>
 
-								<ContactForm formValues={formValues} setFormValues={setFormValues} />
+								<ContactForm />
 							</>
 						)}
 					</div>
@@ -100,9 +98,9 @@ const Cart = ({ hideButton }: CartProps) => {
 				type="button"
 				onClick={() => setCartOpen(true)}
 			>
-				{formValues.products.length > 0 && (
+				{order.products.length > 0 && (
 					<div className="absolute bg-red-500 rounded-full w-8 h-8 justify-center items-center right-0 -top-1 flex">
-						{formValues.products.length}
+						{order.products.length}
 					</div>
 				)}
 

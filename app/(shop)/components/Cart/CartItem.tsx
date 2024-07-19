@@ -3,7 +3,15 @@ import Image from "next/image";
 import { useContext } from "react";
 import { CartContext } from "../../providers/CartProvider";
 
-const CartItem = ({ item }) => {
+type ProductItem = {
+	id: string;
+	name: string;
+	quantity: number;
+	unit: string;
+	price: number;
+};
+
+const CartItem = ({ item }: { item: ProductItem }) => {
 	const { deleteFromCart } = useContext(CartContext);
 
 	return (

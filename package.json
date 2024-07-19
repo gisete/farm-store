@@ -11,6 +11,8 @@
   "dependencies": {
     "@googleapis/drive": "^8.11.0",
     "@googleapis/sheets": "^9.0.0",
+    "@supabase/ssr": "^0.4.0",
+    "@supabase/supabase-js": "^2.44.4",
     "@types/node": "20.4.2",
     "@types/react": "18.2.14",
     "@types/react-dom": "18.2.7",
