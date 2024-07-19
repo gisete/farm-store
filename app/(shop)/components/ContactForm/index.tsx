@@ -3,64 +3,48 @@
 import React, { useState, useEffect, useContext } from "react";
 import { CartContext } from "../../providers/CartProvider";
 import { createOrder, createProductsTotal } from "@/lib/firebase";
-import { toast } from "react-hot-toast";
-import { set } from "firebase/database";
-import sendOrderToSpreadsheet, { updateTotalSheet } from "@/lib/googleSpreadsheet";
+import useSendOrder from "@/app/hooks/useSendOrder";
 
-const ContactForm = ({ formValues, setFormValues }) => {
-	const { cart, cartTotal, clearCart, showContactForm, setShowContactForm, setOrderSent, hasError, setHasError } =
-		useContext(CartContext);
-	const [isLoading, setIsLoading] = useState(false);
+const ContactForm = () => {
+	const {
+		cart,
+		clearCart,
+		isOrderSending,
+		setIsOrderSending,
+		order,
+		setOrder,
+		showContactForm,
+		setShowContactForm,
+		setOrderSent,
+		hasError,
+		setHasError,
+	} = useContext(CartContext);
+	const sendOrder = useSendOrder();
 
-	const handleFormChange = (e) => {
+	const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const id = e.target.id;
 		const newValue = e.target.value;
-		const dateInPortugal = getDate();
 
-		setFormValues({
-			...formValues,
+		setOrder({
+			...order,
 			[id]: newValue,
-			date: dateInPortugal,
-		});
-	};
-
-	const getDate = () => {
-		const date = new Date();
-		return date.toLocaleString("pt", {
-			month: "2-digit",
-			day: "2-digit",
-			year: "numeric",
-			timeZone: "Europe/Lisbon",
 		});
 	};
 
 	useEffect(() => {
 		// to account for when the cart updates after the page loads
-		setFormValues({
-			...formValues,
+
+		//need to move this to another component
+		setOrder({
+			...order,
 			products: cart,
 		});
 	}, [cart]);
 
-	useEffect(() => {
-		setFormValues({
-			...formValues,
-			total: cartTotal,
-		});
-	}, [cartTotal]);
-
-	async function sendOrder() {
-		// createOrder(formValues);
-
-		//update orders total in Firebase
-		const productsTotal = await createProductsTotal(cart);
-
-		sendOrderToSpreadsheet(formValues)
+	async function handleSendOrder() {
+		sendOrder()
 			.then(() => {
-				//if success update 1st googlesheet with order totals that you get from firebase
-				updateTotalSheet(productsTotal);
-
-				setIsLoading(false);
+				setIsOrderSending(false);
 				setShowContactForm(false);
 				setOrderSent(true);
 				clearCart();
@@ -68,14 +52,14 @@ const ContactForm = ({ formValues, setFormValues }) => {
 			.catch((error) => {
 				console.error(error);
 				setHasError(true);
-				setIsLoading(false);
+				setIsOrderSending(false);
 			});
 	}
 
-	const handleFormSubmit = async (e) => {
+	const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		setIsLoading(true);
-		sendOrder();
+		setIsOrderSending(true);
+		handleSendOrder();
 	};
 
 	return (
@@ -119,15 +103,15 @@ const ContactForm = ({ formValues, setFormValues }) => {
 
 				<button
 					className={`px-6 py-4 text-white rounded font-body mt-4 text-base flex justify-center ${
-						isLoading ? "bg-zinc-400" : "bg-zinc-800"
+						isOrderSending ? "bg-zinc-400" : "bg-zinc-800"
 					}`}
-					disabled={isLoading}
+					disabled={isOrderSending}
 					type="submit"
 				>
-					{isLoading && (
+					{isOrderSending && (
 						<div className="h-5 w-5 border-t-transparent border-solid animate-spin rounded-full border-white border-4 mr-4 "></div>
 					)}
-					{isLoading ? "Enviando..." : "Enviar encomenda"}
+					{isOrderSending ? "Enviando..." : "Enviar encomenda"}
 				</button>
 
 				{hasError && <p className="text-red-500 text-center mt-4">Ocorreu um erro, por favor tente novamente</p>}

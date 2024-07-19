@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Products from "../components/Products";
 import Cart from "../components/Cart";
-import useGetProducts from "../hooks/useGetProducts";
+import useGetProducts from "@/app/hooks/useGetProducts";
 import LoadingProducts from "../components/LoadingProducts";
 
 type ProductsProps = {
