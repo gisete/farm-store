@@ -72,6 +72,13 @@ const ItemRow = ({ product }) => {
 			return;
 		}
 
+		if (chosenUnit === "un" && productUnit === "kg") {
+			setCartProduct({
+				...cartProduct,
+				subTotal: "",
+			});
+		}
+
 		if (productExistsInCart()) {
 			const updatedCart = cart.map((item) => {
 				if (item.name === cartProduct.name) {
