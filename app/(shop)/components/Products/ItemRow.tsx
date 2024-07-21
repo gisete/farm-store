@@ -24,18 +24,6 @@ const ItemRow = ({ product }) => {
 		subTotal: 0,
 	});
 
-	const handleRadioButton = (e) => {
-		setchosenUnit(e.target.value);
-		setCartProduct({
-			...cartProduct,
-			unit: e.target.value,
-		});
-	};
-
-	function handleFocus(event: any) {
-		event.target.select();
-	}
-
 	function calculateProductSubtotal(e) {
 		const parsedValue = parseFloat(e.target.valueAsNumber);
 
@@ -43,10 +31,25 @@ const ItemRow = ({ product }) => {
 
 		//if the unit chosen is UN and the default unit is KG, subtotal is not calculated
 		if (chosenUnit === "un" && productUnit === "kg") {
-			calculatedSubtotal = "";
+			calculatedSubtotal = 0;
 		}
 
 		return calculatedSubtotal ? parseFloat(calculatedSubtotal.toFixed(2)) : calculatedSubtotal;
+	}
+
+	const handleRadioButton = (e) => {
+		setchosenUnit(e.target.value);
+		const calculatedSubtotal = calculateProductSubtotal(e);
+
+		setCartProduct({
+			...cartProduct,
+			unit: e.target.value,
+			subTotal: calculatedSubtotal,
+		});
+	};
+
+	function handleFocus(event: any) {
+		event.target.select();
 	}
 
 	function productExistsInCart() {
@@ -70,13 +73,6 @@ const ItemRow = ({ product }) => {
 
 		if (cartProduct.quantity === 0) {
 			return;
-		}
-
-		if (chosenUnit === "un" && productUnit === "kg") {
-			setCartProduct({
-				...cartProduct,
-				subTotal: "",
-			});
 		}
 
 		if (productExistsInCart()) {

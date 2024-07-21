@@ -42,18 +42,19 @@ const ContactForm = () => {
 	}, [cart]);
 
 	async function handleSendOrder() {
-		sendOrder()
-			.then(() => {
-				setIsOrderSending(false);
-				setShowContactForm(false);
-				setOrderSent(true);
-				clearCart();
-			})
-			.catch((error) => {
-				console.error(error);
-				setHasError(true);
-				setIsOrderSending(false);
-			});
+		console.log(cart);
+		// sendOrder()
+		// 	.then(() => {
+		// 		setIsOrderSending(false);
+		// 		setShowContactForm(false);
+		// 		setOrderSent(true);
+		// 		clearCart();
+		// 	})
+		// 	.catch((error) => {
+		// 		console.error(error);
+		// 		setHasError(true);
+		// 		setIsOrderSending(false);
+		// 	});
 	}
 
 	const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
