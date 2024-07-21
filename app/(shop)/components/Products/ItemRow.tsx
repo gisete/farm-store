@@ -53,10 +53,6 @@ const ItemRow = ({ product }) => {
 		return cart.some((item) => item.name === cartProduct.name);
 	}
 
-	useEffect(() => {
-		console.log(cartProduct);
-	}, [cartProduct]);
-
 	function handleQuantityChange(e: any) {
 		if (isNaN(e.target.value)) return;
 		setQuantity(e.target.valueAsNumber);
