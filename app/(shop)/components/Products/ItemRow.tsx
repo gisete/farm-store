@@ -1,5 +1,5 @@
 "use client";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import Image from "next/image";
 import { CartContext } from "../../providers/CartProvider";
 
@@ -15,7 +15,7 @@ const ItemRow = ({ product }) => {
 		return value !== "" ? true : false;
 	}
 
-	const [order, setOrder] = useState({
+	const [cartProduct, setCartProduct] = useState({
 		name: product.name,
 		id: product.slug,
 		price: productPrice,
@@ -26,8 +26,8 @@ const ItemRow = ({ product }) => {
 
 	const handleRadioButton = (e) => {
 		setchosenUnit(e.target.value);
-		setOrder({
-			...order,
+		setCartProduct({
+			...cartProduct,
 			unit: e.target.value,
 		});
 	};
@@ -43,23 +43,27 @@ const ItemRow = ({ product }) => {
 
 		//if the unit chosen is UN and the default unit is KG, subtotal is not calculated
 		if (chosenUnit === "un" && productUnit === "kg") {
-			calculatedSubtotal = 0;
+			calculatedSubtotal = "";
 		}
 
-		return parseFloat(calculatedSubtotal.toFixed(2));
+		return calculatedSubtotal ? parseFloat(calculatedSubtotal.toFixed(2)) : calculatedSubtotal;
 	}
 
 	function productExistsInCart() {
-		return cart.some((item) => item.name === order.name);
+		return cart.some((item) => item.name === cartProduct.name);
 	}
+
+	useEffect(() => {
+		console.log(cartProduct);
+	}, [cartProduct]);
 
 	function handleQuantityChange(e: any) {
 		if (isNaN(e.target.value)) return;
 		setQuantity(e.target.valueAsNumber);
 		const calculatedSubtotal = calculateProductSubtotal(e);
 
-		setOrder({
-			...order,
+		setCartProduct({
+			...cartProduct,
 			quantity: e.target.valueAsNumber,
 			subTotal: calculatedSubtotal,
 		});
@@ -67,13 +71,18 @@ const ItemRow = ({ product }) => {
 
 	function handleAddToCart(event: any) {
 		event.preventDefault();
+
+		if (cartProduct.quantity === 0) {
+			return;
+		}
+
 		if (productExistsInCart()) {
 			const updatedCart = cart.map((item) => {
-				if (item.name === order.name) {
+				if (item.name === cartProduct.name) {
 					return {
 						...item,
-						quantity: item.quantity + order.quantity,
-						subTotal: item.subTotal + order.subTotal,
+						quantity: item.quantity + cartProduct.quantity,
+						subTotal: item.subTotal + cartProduct.subTotal,
 					};
 				}
 				return item;
@@ -85,7 +94,7 @@ const ItemRow = ({ product }) => {
 
 		setQuantity(0);
 
-		setCart([...cart, order]);
+		setCart([...cart, cartProduct]);
 	}
 
 	return (
