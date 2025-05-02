@@ -47,10 +47,12 @@ const ContactForm = () => {
 				setIsOrderSending(false);
 				setShowContactForm(false);
 				setOrderSent(true);
+				setHasError(false);
 				clearCart();
 			})
 			.catch((error) => {
-				console.error(error);
+				console.error("Order submission error:", error);
+				setOrderSent(true);
 				setHasError(true);
 				setIsOrderSending(false);
 			});

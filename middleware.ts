@@ -13,5 +13,8 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-	matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
+	matcher: [
+		// Update the pattern to exclude .ico files as well
+		"/((?!api|_next/static|_next/image|.*\\.png$|.*\\.ico$).*)",
+	],
 };
