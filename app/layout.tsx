@@ -19,12 +19,15 @@ const lato = Lato({
 export const metadata: Metadata = {
 	title: "Horta do Pé Descalço",
 	description: "",
+	icons: {
+		icon: "/favicon.ico", // /public path
+	},
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
-		<html lang="en-150">
-			<body className={`${lato.variable}`}>{children}</body>
+		<html lang="en-150" className={lato.className}>
+			<body className="font-body">{children}</body>
 		</html>
 	);
 }

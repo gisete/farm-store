@@ -10,8 +10,12 @@ export default function () {
 		const { data, error } = await supabaseClient.from("orders").insert(order).select();
 
 		if (error) {
-			return error;
+			console.error("Supabase insert error detected:", error);
+			throw error;
 		}
+
+		// Optional: return data on success if needed by the .then() block
+		return data;
 	}
 
 	return sendOrder;

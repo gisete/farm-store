@@ -3,47 +3,68 @@ import { useState, useContext } from "react";
 import { CartContext } from "../../providers/CartProvider"; // Context for managing the shopping cart
 
 const ItemRow = ({ product }) => {
-	// Access cart state and setter from context
 	const { cart, setCart } = useContext(CartContext);
 
-	// Determine the primary display price and unit label based on product data
+	// --- Static Base Price Info (Used for display & stored 'price') ---
 	const displayPrice = product.price ? parseFloat(product.price) : parseFloat(product.priceUnit || 0);
 	const displayUnitLabel = product.price ? "kg" : "unidade";
 
-	// Determine initial unit selection (defaults to 'kg' if price exists, else 'un')
+	// Determine initial unit selection
 	const initialUnit = product.price ? "kg" : "un";
 
-	// State for the quantity input field (stores raw user input including comma/period)
+	// State for the quantity input field (raw user input)
 	const [quantity, setQuantity] = useState("");
 	// State for the currently selected unit ('kg' or 'un')
 	const [chosenUnit, setchosenUnit] = useState(initialUnit);
 
-	// State for the product details to be added to the cart (no price/subtotal stored)
+	// Helper function to get the price for a specific unit type (kg or un)
+	const getPriceForUnit = (unit) =>
+		unit === "kg" ? parseFloat(product.price || 0) : parseFloat(product.priceUnit || 0);
+
+	// Calculates subtotal based on quantity and the price of the *selected* unit
+	function calculateProductSubtotal(numericValue, unit) {
+		const pricePerUnit = getPriceForUnit(unit); // Price depends on the chosen unit
+		let calculatedSubtotal = pricePerUnit * (numericValue || 0);
+		// Format to 2 decimal places, handle potential floating point issues
+		return calculatedSubtotal > 0 ? parseFloat(calculatedSubtotal.toFixed(2)) : 0;
+	}
+
+	// State for the product details to be added to the cart
 	const [cartProduct, setCartProduct] = useState({
 		name: product.name,
 		id: product.slug,
-		quantity: 0, // Stores the parsed, numeric quantity
-		unit: chosenUnit,
+		price: displayPrice, // Static base price stored
+		quantity: 0, // Numeric quantity
+		unit: chosenUnit, // Currently selected unit
+		subTotal: 0, // Calculated subtotal based on quantity and chosen unit's price
 	});
 
-	// Updates the chosen unit state when a radio button is clicked
+	// Updates the chosen unit and recalculates subTotal
 	const handleRadioButton = (e) => {
 		const newUnit = e.target.value;
 		setchosenUnit(newUnit);
-		setCartProduct((prev) => ({ ...prev, unit: newUnit }));
+		// Recalculate subtotal based on current quantity and NEW unit
+		const currentNumericQuantity = parseFloat(String(quantity).replace(",", ".")) || 0;
+		const calculatedSubtotal = calculateProductSubtotal(currentNumericQuantity, newUnit);
+
+		setCartProduct((prev) => ({
+			...prev, // Keep name, id, price, quantity
+			unit: newUnit, // Update unit
+			subTotal: calculatedSubtotal, // Update subTotal
+		}));
 	};
 
-	// Selects the input field's content on focus
+	// Selects input content on focus
 	function handleFocus(event) {
 		event.target.select();
 	}
 
-	// Handles changes in the quantity input field, allowing comma or period
+	// Handles changes in the quantity input, updates quantity and subTotal states
 	function handleQuantityChange(e) {
 		const rawValue = e.target.value;
 		if (rawValue === "") {
 			setQuantity("");
-			setCartProduct((prev) => ({ ...prev, quantity: 0 }));
+			setCartProduct((prev) => ({ ...prev, quantity: 0, subTotal: 0 })); // Reset quantity & subTotal
 			return;
 		}
 		// Standardize to period for parsing, validate format
@@ -52,49 +73,60 @@ const ItemRow = ({ product }) => {
 			return; // Invalid format
 		}
 		const parsedValue = parseFloat(sanitizedValue);
-		// Update state if valid number parsed
 		if (!isNaN(parsedValue) && parsedValue >= 0) {
 			setQuantity(rawValue); // Keep raw display value
-			setCartProduct((prev) => ({ ...prev, quantity: parsedValue })); // Store numeric value
+			// Calculate subtotal based on new quantity and current unit
+			const calculatedSubtotal = calculateProductSubtotal(parsedValue, chosenUnit);
+			// Update numeric quantity & calculated subTotal in cartProduct state
+			setCartProduct((prev) => ({ ...prev, quantity: parsedValue, subTotal: calculatedSubtotal }));
 		} else if (rawValue === "0" || rawValue.endsWith(",") || rawValue.endsWith(".")) {
-			// Allow intermediate valid typing (like "1,") but treat quantity as 0 for cart state
 			setQuantity(rawValue);
-			setCartProduct((prev) => ({ ...prev, quantity: 0 }));
+			// Reset quantity & subTotal if intermediate/invalid
+			setCartProduct((prev) => ({ ...prev, quantity: 0, subTotal: 0 }));
 		}
 	}
 
-	// Handles adding the item (quantity and unit) to the cart state
+	// Handles adding the item (with price and subTotal) to the cart state
 	function handleAddToCart(event) {
 		event.preventDefault();
-		// Validate quantity before adding
+		// Validate quantity
 		if (cartProduct.quantity <= 0 || isNaN(cartProduct.quantity)) {
 			return;
 		}
-		// Check if item with same ID and Unit already exists in cart
+		// Check if item with same ID and Unit already exists
 		const existingCartItemIndex = cart.findIndex(
 			(item) => item.id === cartProduct.id && item.unit === cartProduct.unit
 		);
 		if (existingCartItemIndex > -1) {
-			// Item exists: update quantity
+			// Item exists: update quantity and subTotal
 			const updatedCart = [...cart];
 			const existingItem = updatedCart[existingCartItemIndex];
 			updatedCart[existingCartItemIndex] = {
-				...existingItem,
-				quantity: existingItem.quantity + cartProduct.quantity,
+				...existingItem, // Keep existing name, id, price, unit
+				quantity: existingItem.quantity + cartProduct.quantity, // Add quantities
+				// Add new subTotal to existing subTotal, format correctly
+				subTotal: parseFloat((existingItem.subTotal + cartProduct.subTotal).toFixed(2)),
 			};
 			setCart(updatedCart);
 		} else {
-			// Item doesn't exist: add new item
+			// Item doesn't exist: add new item (cartProduct includes price & subTotal)
 			setCart([...cart, { ...cartProduct }]);
 		}
-		// Reset input field and quantity state for this row
+
+		// Reset row state after adding
 		setQuantity("");
-		setCartProduct((prev) => ({
-			...prev,
-			quantity: 0,
-		}));
+		setCartProduct({
+			// Explicitly reset fields
+			name: product.name,
+			id: product.slug,
+			price: displayPrice, // Reset price to base price
+			quantity: 0, // Reset quantity
+			unit: chosenUnit, // Keep chosen unit
+			subTotal: 0, // Reset subTotal
+		});
 	}
 
+	// --- Component Render ---
 	return (
 		<form
 			className="grid border-b border-zinc-100 grid-cols-5 md:grid-cols-5 py-3 md:py-2 font-body"
@@ -185,6 +217,7 @@ const ItemRow = ({ product }) => {
 				<button
 					type="submit"
 					className="text-white bg-amber-500 focus:ring-4 rounded w-full md:w-[130px] h-[45px] md:h-[40px] inline-flex items-center shrink-0 text-sm tracking-wide focus:outline-none focus:ring-blue-300 flex justify-center mt-4 md:mt-0 md:ml-4 uppercase"
+					// Disable button if quantity is invalid
 					disabled={cartProduct.quantity <= 0 || isNaN(cartProduct.quantity)}
 				>
 					Adicionar

@@ -1,39 +1,38 @@
 "use client";
 import { createContext, useState, useEffect } from "react";
 
-// Create the context for the cart
 export const CartContext = createContext();
 
-// Provider component to manage cart state and logic
 function CartProvider({ children }) {
-	// Internal state for the cart items
 	const [cart, _setCart] = useState([]);
-	// State to prevent saving to localStorage before initial load is complete
 	const [isLoading, setIsLoading] = useState(true);
-	// State for managing order/contact form visibility
 	const [showContactForm, setShowContactForm] = useState(false);
-	// State flags for order submission status
 	const [orderSent, setOrderSent] = useState(false);
+	const [isCartOpen, setCartOpen] = useState(false);
 	const [hasError, setHasError] = useState(false);
 	const [isOrderSending, setIsOrderSending] = useState(false);
-	// State for cart visibility (mobile)
-	const [isCartOpen, setCartOpen] = useState(false);
-	// State object holding the current order details
 	const [order, setOrder] = useState({
 		name: "",
 		phone: "",
 		comment: "",
-		products: [], // Start with empty products, synced via useEffect
+		products: [],
 	});
 
-	// Wrapper for the internal _setCart function.
-	// Resets orderSent/hasError flags when cart is modified after an order attempt.
+	// This is called specifically after successful order submission
+	const _clearCartData = () => {
+		_setCart([]); // Use internal setter to bypass flag reset
+		localStorage.removeItem("cart"); // Clear storage directly
+		console.log("Cart data cleared post-order."); // Optional log
+	};
+
+	// Wrapper for general cart updates (add, update quantity in ItemRow)
+	// Resets order/error flags when user interacts with cart AFTER an order attempt
 	const setCart = (newCartDataOrCallback) => {
 		if (orderSent || hasError) {
+			// Reset flags if user modifies cart after order attempt
 			setOrderSent(false);
 			setHasError(false);
 		}
-		// Supports standard state setting or functional updates
 		if (typeof newCartDataOrCallback === "function") {
 			_setCart(newCartDataOrCallback);
 		} else {
@@ -41,92 +40,75 @@ function CartProvider({ children }) {
 		}
 	};
 
-	// Clears the cart and resets order status flags
+	// Function typically used for a "Clear Cart" button by the user
+	// Clears data AND resets flags
 	function clearCart() {
-		setCart([]); // Use wrapper, which calls _setCart
-		// Order flags reset within setCart wrapper or explicitly below is fine too
+		_clearCartData(); // Use the data clearing function
+		// Explicitly reset flags here too, as this is a direct user action to reset
 		setOrderSent(false);
 		setHasError(false);
-		// localStorage is cleared by the saving useEffect when cart becomes []
 	}
 
-	// Deletes an item from the cart by its ID
+	// Deletes an item, uses internal setter but also resets flags
 	function deleteFromCart(id) {
-		// Use functional update with internal setter for atomicity
 		_setCart((prevCart) => {
 			const newCart = prevCart.filter((item) => item.id !== id);
-			// Reset flags if cart is modified after order attempt
+			// Reset flags immediately if deleting after order attempt
 			if (orderSent || hasError) {
 				setOrderSent(false);
 				setHasError(false);
 			}
-			return newCart; // Return the new cart state
+			return newCart;
 		});
 	}
 
-	// Effect to manage body scroll lock when mobile cart overlay is open
+	// --- useEffect hooks remain the same ---
 	useEffect(() => {
+		// Body overflow
 		const getBodyElement = document.querySelector("body");
-		if (isCartOpen) {
-			getBodyElement.style.overflow = "hidden";
-		} else {
-			getBodyElement.style.overflow = "auto";
-		}
+		if (isCartOpen) getBodyElement.style.overflow = "hidden";
+		else getBodyElement.style.overflow = "auto";
 	}, [isCartOpen]);
 
-	// Effect for SAVING cart state to localStorage whenever 'cart' state changes.
-	// Avoids saving until initial loading is finished.
 	useEffect(() => {
-		// Don't save during initial load phase
-		if (isLoading) {
-			return;
-		}
+		// Save to localStorage
+		if (isLoading) return;
 		try {
-			if (cart && cart.length > 0) {
-				localStorage.setItem("cart", JSON.stringify(cart));
-			} else if (cart && cart.length === 0) {
-				// Clear localStorage if cart becomes empty post-load
-				localStorage.removeItem("cart");
-			}
+			if (cart && cart.length > 0) localStorage.setItem("cart", JSON.stringify(cart));
+			else if (cart && cart.length === 0) localStorage.removeItem("cart");
 		} catch (error) {
-			console.error("Failed to save cart to localStorage:", error);
+			console.error("Failed to save cart:", error);
 		}
-	}, [cart, isLoading]); // Run when cart or isLoading changes
+	}, [cart, isLoading]);
 
-	// Effect for LOADING cart state from localStorage on initial component mount.
 	useEffect(() => {
-		setIsLoading(true); // Ensure loading state is true initially
+		// Load from localStorage
+		setIsLoading(true);
 		try {
 			const storedCart = localStorage.getItem("cart");
-			if (storedCart) {
-				const parsedCart = JSON.parse(storedCart);
-				_setCart(parsedCart); // Load data using internal setter
-			}
+			if (storedCart) _setCart(JSON.parse(storedCart));
 		} catch (error) {
-			console.error("Failed to load cart from localStorage:", error);
-			localStorage.removeItem("cart"); // Clear potentially corrupted item
+			console.error("Failed to load cart:", error);
+			localStorage.removeItem("cart");
 		} finally {
-			// Mark loading as complete regardless of success/failure
 			setIsLoading(false);
 		}
-	}, []); // Empty dependency array: runs only once on mount
+	}, []);
 
-	// Effect to keep the 'order.products' field in sync with the main cart state.
 	useEffect(() => {
-		// Avoid unnecessary updates if cart reference hasn't changed content meaningfully
+		// Sync order.products
 		if (JSON.stringify(order.products) !== JSON.stringify(cart)) {
-			setOrder((prevOrder) => ({
-				...prevOrder,
-				products: cart || [], // Ensure products is always an array
-			}));
+			setOrder((prevOrder) => ({ ...prevOrder, products: cart || [] }));
 		}
-	}, [cart]); // Run when cart state changes
+	}, [cart]);
+	// --- End useEffect hooks ---
 
-	// Construct the value object provided by the context
+	// Provide the necessary values including the new function
 	const value = {
 		cart,
-		setCart, // Provide the wrapper function
+		setCart,
 		clearCart,
+		_clearCartData,
 		deleteFromCart,
 		showContactForm,
 		setShowContactForm,
