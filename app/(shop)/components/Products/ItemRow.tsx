@@ -126,7 +126,6 @@ const ItemRow = ({ product }) => {
 		});
 	}
 
-	// --- Component Render ---
 	return (
 		<form
 			className="grid border-b border-zinc-100 grid-cols-5 md:grid-cols-5 py-3 md:py-2 font-body"
