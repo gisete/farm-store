@@ -1,3 +1,4 @@
+// File: app/(shop)/components/Products/ItemRow.tsx
 "use client";
 import { useState, useContext } from "react";
 import { CartContext } from "../../providers/CartProvider"; // Context for managing the shopping cart
@@ -5,8 +6,13 @@ import { CartContext } from "../../providers/CartProvider"; // Context for manag
 const ItemRow = ({ product }) => {
 	const { cart, setCart } = useContext(CartContext);
 
+	// --- Note field name changes for Supabase ---
+	// product.price is still product.price
+	// product.priceUnit is now product.price_unit
+	// product.lowStock is now product.low_stock
+
 	// --- Static Base Price Info (Used for display & stored 'price') ---
-	const displayPrice = product.price ? parseFloat(product.price) : parseFloat(product.priceUnit || 0);
+	const displayPrice = product.price ? parseFloat(product.price) : parseFloat(product.price_unit || 0);
 	const displayUnitLabel = product.price ? "kg" : "unidade";
 
 	// Determine initial unit selection
@@ -19,7 +25,7 @@ const ItemRow = ({ product }) => {
 
 	// Helper function to get the price for a specific unit type (kg or un)
 	const getPriceForUnit = (unit) =>
-		unit === "kg" ? parseFloat(product.price || 0) : parseFloat(product.priceUnit || 0);
+		unit === "kg" ? parseFloat(product.price || 0) : parseFloat(product.price_unit || 0);
 
 	// Calculates subtotal based on quantity and the price of the *selected* unit
 	function calculateProductSubtotal(numericValue, unit) {
@@ -136,7 +142,8 @@ const ItemRow = ({ product }) => {
 			<div className="col-span-4 md:col-span-2 flex flex-col mb-2 md:mb-0" role="cell">
 				<div className="text-lg md:text-base">
 					{product.name}
-					{product.lowStock && (
+					{/* NOTE: Field name change from lowStock to low_stock */}
+					{product.low_stock && (
 						<div className="inline-flex items-center ml-2 px-3 py-1 text-gray-500 rounded gap-x-2 bg-gray-100/60 dark:bg-gray-800">
 							<span className="relative text-red-400 uppercase font-semibold text-xs pr-px">low stock</span>
 						</div>

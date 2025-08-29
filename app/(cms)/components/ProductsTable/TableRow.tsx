@@ -1,42 +1,151 @@
 "use client";
 
-import { deleteProduct } from "@/lib/firebase";
+import { deleteProduct, toggleProductStatus, updateProductField } from "@/lib/supabase/actions";
 import Link from "next/link";
+import { useState, useRef, useEffect } from "react";
+import toast from "react-hot-toast";
 
 type SingleProductProps = {
 	product: {
+		id: string;
 		image: string;
 		name: string;
 		description: string;
 		price: number;
-		priceUnit: number;
-		lowStock: boolean;
+		price_unit: number;
+		low_stock: boolean;
 		slug: string;
-		isProductActive: boolean;
+		is_active: boolean;
 	};
 };
 
+// --- Reusable component for inline price editing ---
+const EditablePrice = ({
+	productId,
+	field,
+	initialValue,
+}: {
+	productId: string;
+	field: "price" | "price_unit";
+	initialValue: number;
+}) => {
+	const [isEditing, setIsEditing] = useState(false);
+	const [value, setValue] = useState(initialValue);
+	const inputRef = useRef<HTMLInputElement>(null);
+
+	useEffect(() => {
+		if (isEditing) {
+			inputRef.current?.focus();
+			inputRef.current?.select();
+		}
+	}, [isEditing]);
+
+	const handleSave = async () => {
+		setIsEditing(false);
+		if (value === initialValue) {
+			return;
+		}
+
+		try {
+			await updateProductField(productId, field, value);
+			toast.success("Price updated successfully!");
+		} catch (error) {
+			toast.error("Failed to update price");
+			setValue(initialValue);
+		}
+	};
+
+	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (e.key === "Enter") {
+			handleSave();
+		} else if (e.key === "Escape") {
+			setValue(initialValue);
+			setIsEditing(false);
+		}
+	};
+
+	if (isEditing) {
+		return (
+			<input
+				ref={inputRef}
+				type="number"
+				value={value}
+				onChange={(e) => setValue(parseFloat(e.target.value) || 0)}
+				onKeyDown={handleKeyDown}
+				onBlur={handleSave}
+				className="w-20 px-2 py-1 border rounded-md bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500"
+				step="0.01"
+			/>
+		);
+	}
+
+	return (
+		<div
+			onClick={() => setIsEditing(true)}
+			className="cursor-pointer h-full p-1 rounded-md hover:bg-gray-100 transition-colors min-w-[5rem] flex items-center"
+		>
+			{initialValue > 0 ? `€${initialValue.toFixed(2)}` : "-"}
+		</div>
+	);
+};
+
 const TableRow = ({ product }: SingleProductProps) => {
+	const [isActive, setIsActive] = useState(product.is_active);
+
+	const handleDelete = async () => {
+		const shouldDeleteProduct = confirm("Are you sure you want to delete this product?");
+		if (shouldDeleteProduct) {
+			try {
+				await deleteProduct(product.slug);
+				toast.success("Product deleted successfully!");
+			} catch (error) {
+				toast.error("Failed to delete product");
+			}
+		}
+	};
+
+	const handleStatusChange = async () => {
+		const newStatus = !isActive;
+		setIsActive(newStatus);
+
+		try {
+			await toggleProductStatus(product.id, newStatus);
+			toast.success("Status updated successfully!");
+		} catch (error) {
+			setIsActive(!newStatus);
+			toast.error("Failed to update status");
+		}
+	};
+
 	return (
 		<tr className="">
-			<th className="px-6 py-4 font-medium text-gray-600">
+			<th className="px-6 py-4 font-medium text-base text-gray-600">
 				<Link href={`/admin/edit/${product.slug}`}> {product.name}</Link>
 			</th>
 			<td className="px-6 py-4">
-				{product.isProductActive ? (
-					<div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 text-emerald-500 bg-emerald-100/60 dark:bg-gray-800">
-						<h2 className="text-sm font-normal">Active</h2>
-					</div>
-				) : (
-					<div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 text-orange-500 bg-orange-100/60 dark:bg-gray-800">
-						<h2 className="text-sm font-normal">Inactive</h2>
-					</div>
-				)}
+				<button
+					onClick={handleStatusChange}
+					className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 rounded-full"
+				>
+					{isActive ? (
+						<div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 text-emerald-500 bg-emerald-100/60 dark:bg-gray-800">
+							<h2 className="text-sm font-normal">Active</h2>
+						</div>
+					) : (
+						<div className="inline-flex items-center px-3 py-1 rounded-full gap-x-2 text-orange-500 bg-orange-100/60 dark:bg-gray-800">
+							<h2 className="text-sm font-normal">Inactive</h2>
+						</div>
+					)}
+				</button>
 			</td>
-			<td className="px-6 py-4 text-gray-900">{product.price > 0 ? "€" + product.price : "-"}</td>
-			<td className="px-6 py-4 text-gray-900">{product.priceUnit > 0 ? "€" + product.priceUnit : "-"}</td>
+			<td className="px-6 py-4 text-gray-900">
+				<EditablePrice productId={product.id} field="price" initialValue={product.price} />
+			</td>
+			<td className="px-6 py-4 text-gray-900">
+				<EditablePrice productId={product.id} field="price_unit" initialValue={product.price_unit} />
+			</td>
 			<td className="px-6 py-4">
-				{product.lowStock && (
+				{product.low_stock && (
 					<div className="inline-flex items-center px-3 py-1 text-gray-500 rounded-full gap-x-2 bg-gray-100/60 dark:bg-gray-800">
 						<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<path
@@ -47,22 +156,13 @@ const TableRow = ({ product }: SingleProductProps) => {
 								strokeLinejoin="round"
 							/>
 						</svg>
-
 						<h2 className="text-sm font-normal"></h2>
 					</div>
 				)}
 			</td>
 			<td className="px-6 py-4">
 				<div className="flex justify-end gap-4">
-					<button
-						x-data="{ tooltip: 'Delete' }"
-						onClick={() => {
-							const shouldDeleteProduct = confirm("Are you sure you want to delete this product?");
-							if (shouldDeleteProduct) {
-								deleteProduct(product.slug);
-							}
-						}}
-					>
+					<button x-data="{ tooltip: 'Delete' }" onClick={handleDelete}>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							fill="none"
@@ -79,24 +179,8 @@ const TableRow = ({ product }: SingleProductProps) => {
 							/>
 						</svg>
 					</button>
-					{/* <a x-data="{ tooltip: 'Edite' }" href="#">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          className="h-6 w-6"
-          x-tooltip="tooltip"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"
-          />
-        </svg>
-      </a> */}
 				</div>
+				{/* The Notification component is no longer needed here */}
 			</td>
 		</tr>
 	);

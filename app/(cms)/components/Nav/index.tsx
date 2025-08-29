@@ -32,15 +32,6 @@ const Nav = () => {
 						<span className="ml-3">Categories</span>
 					</Link>
 				</li>
-				<li>
-					<Link
-						href="/admin/orders"
-						className="flex items-center pl-2 text-gray-900 rounded-lg dark:text-white hover:text-green-700 transition-colors group"
-					>
-						<Image src="/img/icon-shopping-bag.svg" alt="Logo" width="16" height="16" />
-						<span className="ml-3">Orders</span>
-					</Link>
-				</li>
 			</ul>
 		</div>
 	);

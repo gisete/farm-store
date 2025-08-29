@@ -1,24 +1,20 @@
-import { database } from "@/lib/firebase-config";
-import { ref, onValue } from "firebase/database";
+// File: app/hooks/useGetProducts.tsx
 import { useState } from "react";
+import { getProducts as getProductsSupabase } from "@/lib/supabase/actions";
 
-export default function () {
-	const productsRef = ref(database, "products");
+export default function useGetProducts() {
 	const [allProducts, setAllProducts] = useState([]);
 	const [productsLength, setProductsLength] = useState(0);
 
-	function getAllProducts() {
-		onValue(productsRef, (snapshot) => {
-			const data = snapshot.val();
-			var result = [];
-
-			for (var slug in data) {
-				const product = data[slug];
-				result.push(product);
-			}
-			setProductsLength(result.length);
-			setAllProducts(result);
-		});
+	async function getAllProducts() {
+		const { data, error } = await getProductsSupabase();
+		if (data) {
+			setAllProducts(data);
+			setProductsLength(data.length);
+		}
+		if (error) {
+			console.error(error);
+		}
 	}
 
 	function getProductsLength() {

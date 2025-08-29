@@ -1,21 +1,7 @@
-"use client";
-
 import TableRow from "./TableRow";
-import { useEffect, useState } from "react";
-import useGetProducts from "../../hooks/useGetProducts";
 
-export default function ProductsTable() {
-	const [products, setProducts] = useState([]);
-	const { allProducts, getAllProducts } = useGetProducts();
-
-	useEffect(() => {
-		getAllProducts();
-	}, []);
-
-	useEffect(() => {
-		setProducts(allProducts);
-	}, [allProducts]);
-
+// This is now a Server Component that receives products as a prop.
+export default function ProductsTable({ products }) {
 	return (
 		<div className="overflow-hidden ">
 			<table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
@@ -39,7 +25,7 @@ export default function ProductsTable() {
 						<th scope="col" className="px-6 py-4 font-medium text-gray-900"></th>
 					</tr>
 				</thead>
-				{allProducts && (
+				{products && products.length > 0 && (
 					<tbody className="divide-y divide-gray-100 border-t border-gray-100">
 						{products.map((product, index) => (
 							<TableRow product={product} key={`prod-${index}`} />
@@ -50,5 +36,3 @@ export default function ProductsTable() {
 		</div>
 	);
 }
-
-export const revalidate = 60;

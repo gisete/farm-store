@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useContext } from "react";
 import { CartContext } from "../../providers/CartProvider";
-// Removed unused Firebase imports if not needed
 import useSendOrder from "@/app/hooks/useSendOrder";
 
 const ContactForm = () => {

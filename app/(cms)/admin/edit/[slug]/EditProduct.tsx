@@ -4,29 +4,30 @@ import toast from "react-hot-toast";
 import useSaveProduct from "../../../hooks/useSaveProduct";
 import Notification from "../../../components/Notification";
 import ProductForm from "../../../components/ProductForm";
-import { getCategories } from "@/lib/firebase";
+import { getCategories } from "@/lib/supabase/actions";
+import { useRouter } from "next/navigation"; // Import useRouter
 
 export default function EditProduct({ product }) {
 	const [categoryData, setData] = useState([]);
-	const { saveProduct, error } = useSaveProduct();
+	const { saveProduct, isLoading } = useSaveProduct();
 	const [formValues, setFormValues] = useState(product);
-	const [isLoading, setIsLoading] = useState(false);
-
-	useEffect(() => {
-		if (error) {
-			toast.error("Error saving product");
-		}
-	}, [error]);
+	const router = useRouter(); // Initialize router
 
 	const getInputValue = (e) => {
-		switch (e.target.type) {
-			case "file":
-				return e.target.files[0];
-			case "checkbox":
-				return e.target.checked;
-			default:
-				return e.target.value;
+		const { type, id, value, checked, files } = e.target;
+
+		if (id === "price" || id === "priceUnit") {
+			if (value === "") return "";
+			const numValue = parseFloat(value);
+			return isNaN(numValue) ? "" : numValue;
 		}
+		if (type === "checkbox") {
+			return checked;
+		}
+		if (type === "file") {
+			return files[0];
+		}
+		return value;
 	};
 
 	const handleFormChange = (e) => {
@@ -41,10 +42,15 @@ export default function EditProduct({ product }) {
 
 	const handleFormSubmit = async (e) => {
 		e.preventDefault();
-		saveProduct(formValues);
-
-		if (!error) {
-			toast.success("Product updated");
+		try {
+			await saveProduct(formValues);
+			toast.success("Product updated successfully!");
+			// --- FIX: Add delay before redirect ---
+			setTimeout(() => {
+				router.push("/admin");
+			}, 1000);
+		} catch (err) {
+			toast.error("Failed to update product.");
 		}
 	};
 

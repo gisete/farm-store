@@ -1,27 +1,22 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { database } from "@/lib/firebase-config";
-import { ref, onValue } from "firebase/database";
 import AddCategoryForm from "../../components/AddCategoryForm";
 import CategoriesTable from "../../components/CategoriesTable";
+import { getCategories } from "@/lib/supabase/actions";
 
 export default function Categories() {
-	const categoriesRef = ref(database, "categories");
 	const [allCategories, setAllCategories] = useState([]);
 
+	const fetchCategories = async () => {
+		const { data } = await getCategories();
+		if (data) {
+			setAllCategories(data);
+		}
+	};
+
 	useEffect(() => {
-		onValue(categoriesRef, (snapshot) => {
-			const data = snapshot.val();
-			var result = [];
-
-			for (var slug in data) {
-				const categories = data[slug];
-				result.push(categories);
-			}
-
-			setAllCategories(result);
-		});
+		fetchCategories();
 	}, []);
 
 	//todo: add loading state
@@ -32,9 +27,9 @@ export default function Categories() {
 				<h1 className="text-2xl">Categories</h1>
 			</div>
 
-			<AddCategoryForm />
+			<AddCategoryForm onCategoryAdded={fetchCategories} />
 
-			<CategoriesTable categories={allCategories} />
+			<CategoriesTable categories={allCategories} onCategoryDeleted={fetchCategories} />
 		</section>
 	);
 }

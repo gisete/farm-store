@@ -1,24 +1,26 @@
 "use client";
 
-import { auth } from "@lib/firebaseAuth";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { FormEvent } from "react";
+import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { signIn } from "@/lib/supabase/actions";
 
 const Login = () => {
 	const router = useRouter();
+	const [error, setError] = useState<string | null>(null);
 
 	async function handleSubmit(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
+		setError(null);
 		const formData = new FormData(event.currentTarget);
-		const email = formData.get("email");
-		const password = formData.get("password");
+		const email = formData.get("email") as string;
+		const password = formData.get("password") as string;
 
 		try {
-			await signInWithEmailAndPassword(auth, email, password);
-			router.push("./admin");
-		} catch {
-			console.log("error");
+			await signIn(email, password);
+			router.push("/admin");
+		} catch (err) {
+			setError("Could not authenticate user. Please check your credentials.");
+			console.log(err);
 		}
 	}
 
@@ -38,6 +40,7 @@ const Login = () => {
 							<input type="email" name="email" className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full" />
 							<label className="font-semibold text-sm text-gray-600 pb-1 block">Password</label>
 							<input type="password" name="password" className="border rounded-lg px-3 py-2 mt-1 mb-5 text-sm w-full" />
+							{error && <p className="text-red-500 text-xs italic mb-4">{error}</p>}
 							<button
 								type="submit"
 								className="transition duration-200 bg-green-500 hover:bg-green-600 focus:bg-green-700 focus:shadow-sm focus:ring-4 focus:ring-green-500 focus:ring-opacity-50 text-white w-full py-2.5 rounded-lg text-sm shadow-sm hover:shadow-md font-semibold text-center inline-block"
@@ -50,7 +53,7 @@ const Login = () => {
 									stroke="currentColor"
 									className="w-4 h-4 inline-block"
 								>
-									<path strokeLinecap="round" strokeLinejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
 								</svg>
 							</button>
 						</div>

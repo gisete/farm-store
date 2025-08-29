@@ -1,14 +1,12 @@
 "use client";
-import { auth } from "@lib/firebaseAuth";
-import { signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import { signOut } from "@/lib/supabase/actions";
 
 const LogoutButton = () => {
 	const router = useRouter();
 	const logoutUser = async (e) => {
 		e.preventDefault();
-
-		await signOut(auth);
+		await signOut();
 		router.push("/login");
 	};
 

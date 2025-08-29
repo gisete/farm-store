@@ -1,4 +1,4 @@
-import SingleProduct from "./SingleProduct";
+// File: app/(shop)/components/Products/index.tsx
 import ItemRow from "./ItemRow";
 
 type ProductsProps = {
@@ -11,9 +11,10 @@ type ProductsProps = {
 			unit: string;
 			slug: string;
 			category: string;
-			isProductActive: boolean;
-			lowStock: boolean;
-			priceUnit: number;
+			// NOTE: Field name change
+			is_active: boolean;
+			low_stock: boolean;
+			price_unit: number;
 		}
 	];
 };
@@ -25,7 +26,8 @@ const Products = ({ products }: ProductsProps) => {
 			<div className="flex flex-col" role="table">
 				{products &&
 					products
-						.filter((product) => product.isProductActive && product.category !== "Parceiros")
+						// NOTE: Field name change from isProductActive to is_active
+						.filter((product) => product.is_active && product.category !== "Parceiros")
 						.map((product, index) => <ItemRow key={`prod-${index}`} product={product} />)}
 			</div>
 
@@ -33,7 +35,8 @@ const Products = ({ products }: ProductsProps) => {
 			<div className="flex flex-col" role="table">
 				{products &&
 					products
-						.filter((product) => product.isProductActive && product.category === "Parceiros")
+						// NOTE: Field name change from isProductActive to is_active
+						.filter((product) => product.is_active && product.category === "Parceiros")
 						.map((product, index) => <ItemRow key={`prod-${index}`} product={product} />)}
 			</div>
 		</>
