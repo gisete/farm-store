@@ -13,9 +13,11 @@ import Notification from "./components/Notification";
 export default function CmsLayout({ children }: { children: React.ReactNode }) {
 	const [user, setUser] = useState(null);
 	const [loading, setLoading] = useState(true);
+	const [mounted, setMounted] = useState(false);
 	const router = useRouter();
 
 	useEffect(() => {
+		setMounted(true);
 		const checkSession = async () => {
 			const supabase = createClient();
 			const {
@@ -33,12 +35,12 @@ export default function CmsLayout({ children }: { children: React.ReactNode }) {
 		checkSession();
 	}, [router]);
 
+	if (!mounted) {
+		return null;
+	}
+
 	if (loading) {
-		return (
-			<div className="flex h-screen items-center justify-center" suppressHydrationWarning>
-				Loading...
-			</div>
-		);
+		return <div className="flex h-screen items-center justify-center">Loading...</div>;
 	}
 
 	if (user) {

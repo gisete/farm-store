@@ -1,15 +1,21 @@
 "use client";
 import { deleteCategory } from "@/lib/supabase/actions";
 import toast from "react-hot-toast";
+import { useEffect, useState } from "react";
 
 type CategoriesTableProps = {
 	categories: Array<any>;
 };
 
 export default function CategoriesTable({ categories }: CategoriesTableProps) {
+	const [mounted, setMounted] = useState(false);
+
+	useEffect(() => {
+		setMounted(true);
+	}, []);
+
 	const handleDelete = async (slug: string) => {
-		// We can keep a confirm dialog here for safety
-		if (window.confirm("Are you sure you want to delete this category?")) {
+		if (mounted && window.confirm("Are you sure you want to delete this category?")) {
 			try {
 				await deleteCategory(slug);
 				toast.success("Category deleted successfully");

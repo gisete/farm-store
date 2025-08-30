@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import type React from "react";
 
 type FormValuesType = {
 	name: string;
@@ -76,12 +76,13 @@ export default function ProductForm({
 							className="block appearance-none w-full bg-grey-lighter border border-grey-lighter text-grey-darker py-3 px-4 pr-8 rounded"
 							id="category"
 							onChange={handleFormChange}
+							defaultValue={formValues.category}
 						>
 							<option value="All">All</option>
 							{categoryData &&
 								categoryData.map((category) => {
 									return (
-										<option key={category.slug} value={category.name} selected={category.name === formValues.category}>
+										<option key={category.slug} value={category.name}>
 											{category.name}
 										</option>
 									);
