@@ -101,7 +101,7 @@ const TableRow = ({ product }: SingleProductProps) => {
 
 	return (
 		<tr className="">
-			<th className="px-6 py-4 font-medium text-gray-600">
+			<th className="px-6 py-4 font-medium text-base text-gray-600">
 				<Link href={`/admin/edit/${product.slug}`}> {product.name}</Link>
 			</th>
 			<td className="px-6 py-4">

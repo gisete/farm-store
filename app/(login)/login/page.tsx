@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { type FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "@/lib/supabase/actions";
 
@@ -12,11 +12,9 @@ const Login = () => {
 		event.preventDefault();
 		setError(null);
 		const formData = new FormData(event.currentTarget);
-		const email = formData.get("email") as string;
-		const password = formData.get("password") as string;
 
 		try {
-			await signIn(email, password);
+			await signIn(formData);
 			router.push("/admin");
 		} catch (err) {
 			setError("Could not authenticate user. Please check your credentials.");
