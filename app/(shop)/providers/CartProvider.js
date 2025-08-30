@@ -6,6 +6,7 @@ export const CartContext = createContext();
 function CartProvider({ children }) {
 	const [cart, _setCart] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
+	const [mounted, setMounted] = useState(false);
 	const [showContactForm, setShowContactForm] = useState(false);
 	const [orderSent, setOrderSent] = useState(false);
 	const [isCartOpen, setCartOpen] = useState(false);
@@ -62,7 +63,10 @@ function CartProvider({ children }) {
 		});
 	}
 
-	// --- useEffect hooks remain the same ---
+	useEffect(() => {
+		setMounted(true);
+	}, []);
+
 	useEffect(() => {
 		// Body overflow
 		const getBodyElement = document.querySelector("body");
@@ -72,17 +76,18 @@ function CartProvider({ children }) {
 
 	useEffect(() => {
 		// Save to localStorage
-		if (isLoading) return;
+		if (isLoading || !mounted) return;
 		try {
 			if (cart && cart.length > 0) localStorage.setItem("cart", JSON.stringify(cart));
 			else if (cart && cart.length === 0) localStorage.removeItem("cart");
 		} catch (error) {
 			console.error("Failed to save cart:", error);
 		}
-	}, [cart, isLoading]);
+	}, [cart, isLoading, mounted]);
 
 	useEffect(() => {
 		// Load from localStorage
+		if (!mounted) return;
 		setIsLoading(true);
 		try {
 			const storedCart = localStorage.getItem("cart");
@@ -93,7 +98,7 @@ function CartProvider({ children }) {
 		} finally {
 			setIsLoading(false);
 		}
-	}, []);
+	}, [mounted]);
 
 	useEffect(() => {
 		// Sync order.products
@@ -101,7 +106,6 @@ function CartProvider({ children }) {
 			setOrder((prevOrder) => ({ ...prevOrder, products: cart || [] }));
 		}
 	}, [cart]);
-	// --- End useEffect hooks ---
 
 	// Provide the necessary values including the new function
 	const value = {
@@ -124,7 +128,11 @@ function CartProvider({ children }) {
 		setIsOrderSending,
 	};
 
-	return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+	return (
+		<CartContext.Provider value={value} suppressHydrationWarning={true}>
+			{children}
+		</CartContext.Provider>
+	);
 }
 
 export default CartProvider;

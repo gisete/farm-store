@@ -1,18 +1,12 @@
-// File: app/(shop)/components/Products/ItemRow.tsx
 "use client";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { CartContext } from "../../providers/CartProvider"; // Context for managing the shopping cart
 
 const ItemRow = ({ product }) => {
 	const { cart, setCart } = useContext(CartContext);
-
-	// --- Note field name changes for Supabase ---
-	// product.price is still product.price
-	// product.priceUnit is now product.price_unit
-	// product.lowStock is now product.low_stock
-
+	const [mounted, setMounted] = useState(false);
 	// --- Static Base Price Info (Used for display & stored 'price') ---
-	const displayPrice = product.price ? parseFloat(product.price) : parseFloat(product.price_unit || 0);
+	const displayPrice = product.price ? Number.parseFloat(product.price) : Number.parseFloat(product.price_unit || 0);
 	const displayUnitLabel = product.price ? "kg" : "unidade";
 
 	// Determine initial unit selection
@@ -25,14 +19,14 @@ const ItemRow = ({ product }) => {
 
 	// Helper function to get the price for a specific unit type (kg or un)
 	const getPriceForUnit = (unit) =>
-		unit === "kg" ? parseFloat(product.price || 0) : parseFloat(product.price_unit || 0);
+		unit === "kg" ? Number.parseFloat(product.price || 0) : Number.parseFloat(product.price_unit || 0);
 
 	// Calculates subtotal based on quantity and the price of the *selected* unit
 	function calculateProductSubtotal(numericValue, unit) {
 		const pricePerUnit = getPriceForUnit(unit); // Price depends on the chosen unit
-		let calculatedSubtotal = pricePerUnit * (numericValue || 0);
+		const calculatedSubtotal = pricePerUnit * (numericValue || 0);
 		// Format to 2 decimal places, handle potential floating point issues
-		return calculatedSubtotal > 0 ? parseFloat(calculatedSubtotal.toFixed(2)) : 0;
+		return calculatedSubtotal > 0 ? Number.parseFloat(calculatedSubtotal.toFixed(2)) : 0;
 	}
 
 	// State for the product details to be added to the cart
@@ -50,7 +44,7 @@ const ItemRow = ({ product }) => {
 		const newUnit = e.target.value;
 		setchosenUnit(newUnit);
 		// Recalculate subtotal based on current quantity and NEW unit
-		const currentNumericQuantity = parseFloat(String(quantity).replace(",", ".")) || 0;
+		const currentNumericQuantity = Number.parseFloat(String(quantity).replace(",", ".")) || 0;
 		const calculatedSubtotal = calculateProductSubtotal(currentNumericQuantity, newUnit);
 
 		setCartProduct((prev) => ({
@@ -78,7 +72,7 @@ const ItemRow = ({ product }) => {
 		if (!/^(0|[1-9]\d*)?([,.]\d*)?$/.test(rawValue) || (rawValue.match(/[,.]/g)?.length ?? 0) > 1) {
 			return; // Invalid format
 		}
-		const parsedValue = parseFloat(sanitizedValue);
+		const parsedValue = Number.parseFloat(sanitizedValue);
 		if (!isNaN(parsedValue) && parsedValue >= 0) {
 			setQuantity(rawValue); // Keep raw display value
 			// Calculate subtotal based on new quantity and current unit
@@ -111,7 +105,7 @@ const ItemRow = ({ product }) => {
 				...existingItem, // Keep existing name, id, price, unit
 				quantity: existingItem.quantity + cartProduct.quantity, // Add quantities
 				// Add new subTotal to existing subTotal, format correctly
-				subTotal: parseFloat((existingItem.subTotal + cartProduct.subTotal).toFixed(2)),
+				subTotal: Number.parseFloat((existingItem.subTotal + cartProduct.subTotal).toFixed(2)),
 			};
 			setCart(updatedCart);
 		} else {
@@ -130,6 +124,39 @@ const ItemRow = ({ product }) => {
 			unit: chosenUnit, // Keep chosen unit
 			subTotal: 0, // Reset subTotal
 		});
+	}
+
+	useEffect(() => {
+		setMounted(true);
+	}, []);
+
+	if (!mounted) {
+		return (
+			<div className="grid border-b border-zinc-100 grid-cols-5 md:grid-cols-5 py-3 md:py-2 font-body">
+				<div className="col-span-4 md:col-span-2 flex flex-col mb-2 md:mb-0">
+					<div className="text-lg md:text-base">
+						{product.name}
+						{product.low_stock && (
+							<div className="inline-flex items-center ml-2 px-3 py-1 text-gray-500 rounded gap-x-2 bg-gray-100/60 dark:bg-gray-800">
+								<span className="relative text-red-400 uppercase font-semibold text-xs pr-px">low stock</span>
+							</div>
+						)}
+					</div>
+					{product.description && (
+						<div>
+							<span className="text-zinc-400">{`${product.description}`}</span>
+						</div>
+					)}
+				</div>
+				<div className="col-start-5 md:col-auto col-span-2 md:col-span-1 flex md:items-center justify-self-end md:justify-self-auto">
+					€{displayPrice.toLocaleString("pt-PT", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}/
+					{displayUnitLabel}
+				</div>
+				<div className="col-span-5 md:col-span-1 flex mt-2 md:mt-0 mb-2 md:mb-0 flex-col md:flex-row">
+					<div className="text-sm text-gray-500">Loading...</div>
+				</div>
+			</div>
+		);
 	}
 
 	return (
