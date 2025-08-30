@@ -1,69 +1,46 @@
 "use client";
-import { useState, useEffect } from "react";
+
+import { useState } from "react";
 import toast from "react-hot-toast";
-import useSaveProduct from "../../../hooks/useSaveProduct";
-import Notification from "../../../components/Notification";
+import { useRouter } from "next/navigation";
+import { updateProduct } from "@/lib/supabase/actions";
 import ProductForm from "../../../components/ProductForm";
-import { getCategories } from "@/lib/supabase/actions";
-import { useRouter } from "next/navigation"; // Import useRouter
 
-export default function EditProduct({ product }) {
-	const [categoryData, setData] = useState([]);
-	const { saveProduct, isLoading } = useSaveProduct();
+export default function EditProduct({ product, categoryData }) {
 	const [formValues, setFormValues] = useState(product);
-	const router = useRouter(); // Initialize router
+	const [isLoading, setIsLoading] = useState(false);
+	const router = useRouter();
 
-	const getInputValue = (e) => {
+	const getInputValue = (e: React.ChangeEvent<any>): any => {
 		const { type, id, value, checked, files } = e.target;
-
-		if (id === "price" || id === "priceUnit") {
-			if (value === "") return "";
-			const numValue = parseFloat(value);
-			return isNaN(numValue) ? "" : numValue;
-		}
-		if (type === "checkbox") {
-			return checked;
-		}
-		if (type === "file") {
-			return files[0];
-		}
+		if (type === "checkbox") return checked;
+		if (type === "file") return files[0];
+		if (id === "price" || id === "priceUnit") return parseFloat(value) || 0;
 		return value;
 	};
 
-	const handleFormChange = (e) => {
+	const handleFormChange = (e: React.ChangeEvent<any>) => {
 		const id = e.target.id;
 		const newValue = getInputValue(e);
-
-		setFormValues({
-			...formValues,
-			[id]: newValue,
-		});
+		setFormValues({ ...formValues, [id]: newValue });
 	};
 
-	const handleFormSubmit = async (e) => {
+	const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		setIsLoading(true);
 		try {
-			await saveProduct(formValues);
+			await updateProduct(formValues);
 			toast.success("Product updated successfully!");
-			// --- FIX: Add delay before redirect ---
 			setTimeout(() => {
 				router.push("/admin");
-			}, 1000);
-		} catch (err) {
+			}, 1500);
+		} catch (error) {
 			toast.error("Failed to update product.");
+			console.error(error);
+		} finally {
+			setIsLoading(false);
 		}
 	};
-
-	useEffect(() => {
-		getCategories()
-			.then(({ data }) => {
-				if (!data) return;
-				setData(data);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}, []);
 
 	return (
 		<section>
@@ -79,8 +56,6 @@ export default function EditProduct({ product }) {
 				categoryData={categoryData}
 				isLoading={isLoading}
 			/>
-
-			<Notification />
 		</section>
 	);
 }

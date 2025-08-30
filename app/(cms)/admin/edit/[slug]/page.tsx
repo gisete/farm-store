@@ -1,51 +1,37 @@
-import { getProductBySlug } from "@/lib/supabase/actions";
+// File: app/(cms)/admin/edit/[slug]/page.tsx
 import EditProduct from "./EditProduct";
-import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
 
-async function getProduct(slug: string) {
-	const productData = await getProductBySlug(slug);
+async function getProductAndCategories(slug: string) {
+	const supabase = await createClient();
 
-	if (!productData) {
-		return null;
-	}
+	const { data: product } = await supabase.from("products").select("*").eq("slug", slug).single();
+	const { data: categories } = await supabase.from("categories").select("*");
 
-	const formattedProduct = {
-		id: productData.id,
-		name: productData.name,
-		description: productData.description,
-		price: productData.price,
-		unit: productData.unit,
-		priceUnit: productData.price_unit,
-		lowStock: productData.low_stock,
-		isProductActive: productData.is_active,
-		slug: productData.slug,
-		position: productData.position,
-		category: productData.category,
-		hasKg: productData.has_kg,
-		hasUn: productData.has_un,
-	};
+	// Map product data to camelCase for the form
+	const formattedProduct = product
+		? {
+				id: product.id,
+				name: product.name,
+				description: product.description,
+				price: product.price,
+				unit: product.unit,
+				hasKg: product.has_kg,
+				hasUn: product.has_un,
+				priceUnit: product.price_unit,
+				lowStock: product.low_stock,
+				isProductActive: product.is_active,
+				slug: product.slug,
+				position: product.position,
+				category: product.category,
+		  }
+		: {};
 
-	return formattedProduct;
+	return { product: formattedProduct, categories: categories || [] };
 }
 
 export default async function GetProductBySlug({ params }: { params: { slug: string } }) {
-	const product = await getProduct(params.slug);
+	const { product, categories } = await getProductAndCategories(params.slug);
 
-	if (!product) {
-		return (
-			<section>
-				<div className="mb-8">
-					<h1 className="text-2xl">Product Not Found</h1>
-					<p>
-						The product you are trying to edit does not exist.{" "}
-						<Link href="/admin" className="text-green-500 hover:underline">
-							Return to Products list
-						</Link>
-					</p>
-				</div>
-			</section>
-		);
-	}
-
-	return <EditProduct product={product} />;
+	return <EditProduct product={product} categories={categories} />;
 }

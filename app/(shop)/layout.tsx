@@ -1,7 +1,7 @@
+// File: app/(shop)/layout.tsx
 import "../globals.css";
 import type { Metadata } from "next";
 import Header from "./components/Header";
-
 import CartProvider from "./providers/CartProvider";
 
 export const metadata: Metadata = {
@@ -9,17 +9,13 @@ export const metadata: Metadata = {
 	description: "",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function ShopLayout({ children }: { children: React.ReactNode }) {
 	return (
-		<html lang="en-150">
-			<CartProvider>
-				<body className="font-body m-2">
-					<div className="border border-black max-w-screen-xl xl:mr-auto xl:ml-auto m-2">
-						<Header />
-						<main>{children}</main>
-					</div>
-				</body>
-			</CartProvider>
-		</html>
+		<CartProvider>
+			<div className="border border-black max-w-(--breakpoint-xl) xl:mr-auto xl:ml-auto m-2">
+				<Header />
+				<main>{children}</main>
+			</div>
+		</CartProvider>
 	);
 }

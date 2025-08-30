@@ -1,11 +1,25 @@
 "use client";
-import { deleteCategory } from "@lib/firebase";
+import { deleteCategory } from "@/lib/supabase/actions";
+import toast from "react-hot-toast";
 
 type CategoriesTableProps = {
 	categories: Array<any>;
 };
 
 export default function CategoriesTable({ categories }: CategoriesTableProps) {
+	const handleDelete = async (slug: string) => {
+		// We can keep a confirm dialog here for safety
+		if (window.confirm("Are you sure you want to delete this category?")) {
+			try {
+				await deleteCategory(slug);
+				toast.success("Category deleted successfully");
+			} catch (error) {
+				toast.error("Failed to delete category.");
+				console.error("Error deleting category:", error);
+			}
+		}
+	};
+
 	return (
 		<div className="overflow-hidden ">
 			{categories && categories.length > 0 && (
@@ -19,20 +33,12 @@ export default function CategoriesTable({ categories }: CategoriesTableProps) {
 						</tr>
 					</thead>
 					<tbody className="divide-y divide-gray-100 border-t border-gray-100">
-						{categories.map((category, index) => (
+						{categories.map((category) => (
 							<tr className="" key={category.slug}>
 								<th className="px-6 py-4 font-medium text-gray-900">{category.name}</th>
 								<td className="px-6 py-4">
 									<div className="flex justify-end gap-4">
-										<button
-											x-data="{ tooltip: 'Delete' }"
-											onClick={() => {
-												const shouldDeleteCategory = confirm("Are you sure you want to delete this product?");
-												if (shouldDeleteCategory) {
-													deleteCategory(category.slug);
-												}
-											}}
-										>
+										<button onClick={() => handleDelete(category.slug)}>
 											<svg
 												xmlns="http://www.w3.org/2000/svg"
 												fill="none"
@@ -40,7 +46,6 @@ export default function CategoriesTable({ categories }: CategoriesTableProps) {
 												strokeWidth="1.5"
 												stroke="currentColor"
 												className="h-6 w-6"
-												x-tooltip="tooltip"
 											>
 												<path
 													strokeLinecap="round"

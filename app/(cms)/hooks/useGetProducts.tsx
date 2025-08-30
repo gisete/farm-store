@@ -1,29 +1,23 @@
-import { database } from "@/lib/firebase-config";
-import { ref, onValue, set } from "firebase/database";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 
-export default function () {
-	const productsRef = ref(database, "products");
+export default function useGetProducts() {
 	const [allProducts, setAllProducts] = useState([]);
 	const [productsLength, setProductsLength] = useState(0);
 
-	function getAllProducts() {
-		onValue(productsRef, (snapshot) => {
-			const data = snapshot.val();
-			var result = [];
+	async function getAllProducts() {
+		const supabase = createClient();
+		const { data, error } = await supabase.from("products").select("id");
 
-			for (var slug in data) {
-				const product = data[slug];
-				result.push(product);
-			}
-			setProductsLength(result.length);
-			setAllProducts(result);
-		});
+		if (error) {
+			console.error("Error fetching products:", error);
+			setAllProducts([]);
+			setProductsLength(0);
+		} else {
+			setAllProducts(data || []);
+			setProductsLength(data?.length || 0);
+		}
 	}
 
-	function getProductsLength() {
-		getAllProducts();
-	}
-
-	return { allProducts, getAllProducts, getProductsLength, productsLength };
+	return { allProducts, getAllProducts, productsLength };
 }

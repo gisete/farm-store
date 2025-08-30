@@ -1,25 +1,24 @@
-// File: app/hooks/useGetProducts.tsx
 import { useState } from "react";
-import { getProducts as getProductsSupabase } from "@/lib/supabase/actions";
 
 export default function useGetProducts() {
 	const [allProducts, setAllProducts] = useState([]);
 	const [productsLength, setProductsLength] = useState(0);
 
 	async function getAllProducts() {
-		const { data, error } = await getProductsSupabase();
-		if (data) {
-			setAllProducts(data);
-			setProductsLength(data.length);
-		}
-		if (error) {
+		try {
+			const response = await fetch("/api/getProducts");
+			if (!response.ok) {
+				throw new Error("Failed to fetch products");
+			}
+			const { data } = await response.json();
+			setAllProducts(data || []);
+			setProductsLength(data?.length || 0);
+		} catch (error) {
 			console.error(error);
+			setAllProducts([]);
+			setProductsLength(0);
 		}
 	}
 
-	function getProductsLength() {
-		getAllProducts();
-	}
-
-	return { allProducts, getAllProducts, getProductsLength, productsLength };
+	return { allProducts, getAllProducts, productsLength };
 }

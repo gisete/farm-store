@@ -1,35 +1,19 @@
-"use client";
-
-import { useState, useEffect } from "react";
+// File: app/(cms)/admin/categories/page.tsx
 import AddCategoryForm from "../../components/AddCategoryForm";
 import CategoriesTable from "../../components/CategoriesTable";
-import { getCategories } from "@/lib/supabase/actions";
+import { createClient } from "@/lib/supabase/server";
 
-export default function Categories() {
-	const [allCategories, setAllCategories] = useState([]);
+export default async function Categories() {
+	const supabase = await createClient();
+	const { data: categories } = await supabase.from("categories").select("*");
 
-	const fetchCategories = async () => {
-		const { data } = await getCategories();
-		if (data) {
-			setAllCategories(data);
-		}
-	};
-
-	useEffect(() => {
-		fetchCategories();
-	}, []);
-
-	//todo: add loading state
-	//todo: add error state
 	return (
 		<section>
 			<div className="mb-5">
 				<h1 className="text-2xl">Categories</h1>
 			</div>
-
-			<AddCategoryForm onCategoryAdded={fetchCategories} />
-
-			<CategoriesTable categories={allCategories} onCategoryDeleted={fetchCategories} />
+			<AddCategoryForm />
+			<CategoriesTable categories={categories || []} />
 		</section>
 	);
 }

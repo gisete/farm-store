@@ -1,14 +1,8 @@
+import type React from "react";
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter, Open_Sans, Lato, Lora } from "next/font/google";
-
-const inter = Inter({ subsets: ["latin"] });
-
-const open_sans = Open_Sans({
-	weight: ["400", "700"],
-	subsets: ["latin"],
-	variable: "--font-open-sans",
-});
+import { Lato } from "next/font/google";
+// import { ThemeProvider } from "@/components/theme-provider"
 
 const lato = Lato({
 	weight: ["300", "400", "700"],
@@ -20,14 +14,17 @@ export const metadata: Metadata = {
 	title: "Horta do Pé Descalço",
 	description: "",
 	icons: {
-		icon: "/favicon.ico", // /public path
+		icon: "/favicon.ico",
 	},
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
-		<html lang="en-150" className={lato.className}>
-			<body className="font-body">{children}</body>
+		<html lang="en-150" className={lato.className} suppressHydrationWarning>
+			<body className="font-body">
+				{children}
+				{/* </ThemeProvider> */}
+			</body>
 		</html>
 	);
 }

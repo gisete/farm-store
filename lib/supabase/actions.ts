@@ -1,174 +1,131 @@
+// File: lib/supabase/actions.ts
 "use server";
-import { createClient } from "@lib/supabase/server";
+
+import { createClient } from "./server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-// AUTH ACTIONS
-export async function signIn(email, password) {
-	const supabase = createClient();
-	const { data, error } = await supabase.auth.signInWithPassword({
+export async function signIn(formData: FormData) {
+	const email = formData.get("email") as string;
+	const password = formData.get("password") as string;
+	const supabase = await createClient();
+
+	const { error } = await supabase.auth.signInWithPassword({
 		email,
 		password,
 	});
+
 	if (error) {
-		console.error("Error signing in:", error);
-		throw error;
+		return redirect("/login?message=Could not authenticate user");
 	}
-	return data;
+
+	return redirect("/admin");
 }
 
 export async function signOut() {
-	const supabase = createClient();
-	const { error } = await supabase.auth.signOut();
-	if (error) {
-		console.error("Error signing out:", error);
-		throw error;
-	}
+	const supabase = await createClient();
+	await supabase.auth.signOut();
+	return redirect("/login");
 }
 
-// PRODUCTS
+export async function createProduct(productData: any) {
+	const supabase = await createClient();
+	const { data, error } = await supabase.from("products").insert([productData]).select();
 
-export const getProducts = async () => {
-	const supabase = createClient();
-	const { data, error } = await supabase.from("products").select().order("name", { ascending: true });
-	if (error) {
-		console.error("Error fetching products:", error);
-		return { data: null, error };
-	}
-	return { data, error: null };
-};
-
-export const getProductBySlug = async (slug: string) => {
-	const supabase = createClient();
-	const { data, error } = await supabase.from("products").select("*").eq("slug", slug).single();
-	if (error) {
-		console.error("Error fetching product by slug:", error);
-		return null;
-	}
-	return data;
-};
-
-export const createProduct = async (product: any) => {
-	const supabase = createClient();
-	const { data, error } = await supabase.from("products").insert([
-		{
-			name: product.name,
-			description: product.description,
-			price: product.price,
-			unit: product.unit,
-			price_unit: product.priceUnit,
-			low_stock: product.lowStock,
-			is_active: product.isProductActive,
-			slug: product.slug,
-			position: product.position,
-			category: product.category,
-			has_kg: product.hasKg,
-			has_un: product.hasUn,
-		},
-	]);
 	if (error) {
 		console.error("Error creating product:", error);
-		throw error;
+		throw new Error("Failed to create product.");
 	}
 
 	revalidatePath("/admin");
-};
+	return data;
+}
 
-export const updateProduct = async (product: any) => {
-	const supabase = createClient();
-
-	const productData = {
-		name: product.name,
-		description: product.description,
-		price: product.price,
-		unit: product.unit,
-		price_unit: product.priceUnit,
-		low_stock: product.lowStock,
-		is_active: product.isProductActive,
-		slug: product.slug,
-		position: product.position,
-		category: product.category,
-		has_kg: product.hasKg,
-		has_un: product.hasUn,
-	};
-
-	const { data, error } = await supabase.from("products").update(productData).eq("id", product.id).select();
+export async function updateProduct(productData: any) {
+	const supabase = await createClient();
+	const { data, error } = await supabase
+		.from("products")
+		.update({
+			name: productData.name,
+			description: productData.description,
+			category: productData.category,
+			price: productData.price,
+			price_unit: productData.priceUnit,
+			is_active: productData.isProductActive,
+			low_stock: productData.lowStock,
+			has_kg: productData.hasKg,
+			has_un: productData.hasUn,
+		})
+		.eq("id", productData.id);
 
 	if (error) {
 		console.error("Error updating product:", error);
-		throw error;
+		throw new Error("Failed to update product.");
 	}
 
 	revalidatePath("/admin");
-	revalidatePath(`/admin/edit/${product.slug}`);
-};
+	revalidatePath(`/admin/edit/${productData.slug}`);
+	return data;
+}
 
-export const toggleProductStatus = async (productId: string, isActive: boolean) => {
-	const supabase = createClient();
-	const { error } = await supabase.from("products").update({ is_active: isActive }).eq("id", productId);
+export async function deleteProduct(id: number) {
+	const supabase = await createClient();
+	const { error } = await supabase.from("products").delete().eq("id", id);
 
-	if (error) {
-		console.error("Error updating product status:", error);
-		throw error;
-	}
-
-	revalidatePath("/admin");
-};
-
-// --- NEW FUNCTION to handle in-place price edits ---
-export const updateProductField = async (productId: string, field: "price" | "price_unit", value: number) => {
-	const supabase = createClient();
-	const { error } = await supabase
-		.from("products")
-		.update({ [field]: value })
-		.eq("id", productId);
-
-	if (error) {
-		console.error(`Error updating ${field}:`, error);
-		throw error;
-	}
-
-	revalidatePath("/admin");
-};
-
-export const deleteProduct = async (slug: string) => {
-	const supabase = createClient();
-	const { error } = await supabase.from("products").delete().eq("slug", slug);
 	if (error) {
 		console.error("Error deleting product:", error);
-		throw error;
+		throw new Error("Failed to delete product.");
 	}
+
 	revalidatePath("/admin");
-};
+}
 
-// CATEGORIES
+export async function updateProductField(id: number, field: string, value: any) {
+	const supabase = await createClient();
+	const { data, error } = await supabase
+		.from("products")
+		.update({ [field]: value })
+		.eq("id", id);
 
-export const getCategories = async () => {
-	const supabase = createClient();
-	const { data, error } = await supabase.from("categories").select();
 	if (error) {
-		console.error("Error fetching categories:", error);
-		return { data: null, error };
+		console.error(`Error updating product field ${field}:`, error);
+		throw new Error(`Failed to update product ${field}.`);
 	}
-	return { data, error: null };
-};
 
-export const createCategory = async (category: { name: string; slug: string }) => {
-	const supabase = createClient();
-	const { data, error } = await supabase.from("categories").insert([category]);
+	revalidatePath("/admin");
+	return data;
+}
+
+// --- CATEGORY ACTIONS ---
+
+export async function createCategory(formData: FormData) {
+	const name = formData.get("name") as string;
+	const slug = (formData.get("slug") as string) || name.toLowerCase().replace(/\s+/g, "-");
+
+	if (!name || !slug) {
+		throw new Error("Name and slug are required.");
+	}
+
+	const supabase = await createClient();
+	const { data, error } = await supabase.from("categories").insert([{ name, slug }]).select();
+
 	if (error) {
 		console.error("Error creating category:", error);
-		throw error;
+		throw new Error("Failed to create category.");
 	}
-	revalidatePath("/admin/categories");
-};
 
-export const deleteCategory = async (slug: string) => {
-	const supabase = createClient();
+	revalidatePath("/admin/categories");
+	return data;
+}
+
+export async function deleteCategory(slug: string) {
+	const supabase = await createClient();
 	const { error } = await supabase.from("categories").delete().eq("slug", slug);
+
 	if (error) {
 		console.error("Error deleting category:", error);
-		throw error;
+		throw new Error("Failed to delete category.");
 	}
+
 	revalidatePath("/admin/categories");
-};
+}
