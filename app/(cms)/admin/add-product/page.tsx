@@ -10,5 +10,5 @@ export default async function AddProduct() {
 
 	const productsLength = products ? products.length : 0;
 
-	return <AddProductClient categories={categories || []} productsLength={productsLength} />;
+	return <AddProductClient categoryData={categories || []} productsLength={productsLength} />;
 }
