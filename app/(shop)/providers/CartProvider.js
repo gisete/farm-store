@@ -4,9 +4,9 @@ import { createContext, useState, useEffect } from "react";
 export const CartContext = createContext();
 
 function CartProvider({ children }) {
+	const [mounted, setMounted] = useState(false);
 	const [cart, _setCart] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
-	const [mounted, setMounted] = useState(false);
 	const [showContactForm, setShowContactForm] = useState(false);
 	const [orderSent, setOrderSent] = useState(false);
 	const [isCartOpen, setCartOpen] = useState(false);
@@ -22,7 +22,9 @@ function CartProvider({ children }) {
 	// This is called specifically after successful order submission
 	const _clearCartData = () => {
 		_setCart([]); // Use internal setter to bypass flag reset
-		localStorage.removeItem("cart"); // Clear storage directly
+		if (mounted) {
+			localStorage.removeItem("cart"); // Clear storage directly only if mounted
+		}
 		console.log("Cart data cleared post-order."); // Optional log
 	};
 
@@ -68,15 +70,18 @@ function CartProvider({ children }) {
 	}, []);
 
 	useEffect(() => {
-		// Body overflow
+		if (!mounted) return;
+
 		const getBodyElement = document.querySelector("body");
 		if (isCartOpen) getBodyElement.style.overflow = "hidden";
 		else getBodyElement.style.overflow = "auto";
-	}, [isCartOpen]);
+	}, [isCartOpen, mounted]);
 
 	useEffect(() => {
+		if (!mounted) return;
+
 		// Save to localStorage
-		if (isLoading || !mounted) return;
+		if (isLoading) return;
 		try {
 			if (cart && cart.length > 0) localStorage.setItem("cart", JSON.stringify(cart));
 			else if (cart && cart.length === 0) localStorage.removeItem("cart");
@@ -86,8 +91,8 @@ function CartProvider({ children }) {
 	}, [cart, isLoading, mounted]);
 
 	useEffect(() => {
-		// Load from localStorage
 		if (!mounted) return;
+
 		setIsLoading(true);
 		try {
 			const storedCart = localStorage.getItem("cart");
@@ -107,7 +112,6 @@ function CartProvider({ children }) {
 		}
 	}, [cart]);
 
-	// Provide the necessary values including the new function
 	const value = {
 		cart,
 		setCart,

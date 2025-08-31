@@ -20,15 +20,44 @@ type ProductItem = {
 };
 
 const Cart = ({ hideButton }: CartProps) => {
+	const [mounted, setMounted] = useState(false);
 	const { cart, cartTotal, order, setOrder, isCartOpen, setCartOpen, hasError, orderSent } = useContext(CartContext);
 
-	// for when the cart updates after getting localstorage values
-	useEffect(() => {
+	const handleCartUpdate = () => {
+		if (!mounted) return;
+
 		setOrder({
 			...order,
 			products: cart,
 		});
-	}, [cart]);
+	};
+
+	useEffect(() => {
+		setMounted(true);
+	}, []);
+
+	useEffect(() => {
+		handleCartUpdate();
+	}, [cart, mounted]);
+
+	if (!mounted) {
+		return (
+			<>
+				<div className="bg-white w-full fixed md:w-100 md:static top-0 bottom-0 right-0 translate-x-full md:transform-none cart-closed z-10 overflow-scroll md:sticky top-0">
+					<div className="pt-20 md:pt-10 p-6 flex flex-col">
+						<h2 className="text-center text-lg mb-6 uppercase tracking-wide font-semibold">Cabaz</h2>
+						<p className="text-center text-zinc-400">Loading...</p>
+					</div>
+				</div>
+				<button
+					className="fixed w-20 h-20 top-5 right-2 bg-orange-300 text-white px-6 py-3 rounded-full shadow md:hidden"
+					type="button"
+				>
+					<Image src="/img/icon-basket.png" width={40} height={40} alt="Picture of the author" />
+				</button>
+			</>
+		);
+	}
 
 	return (
 		<>
@@ -36,6 +65,7 @@ const Cart = ({ hideButton }: CartProps) => {
 				className={`bg-white w-full fixed md:w-100 md:static top-0 bottom-0 right-0 translate-x-full md:transform-none cart-closed z-10 overflow-scroll md:sticky top-0 ${
 					isCartOpen ? "cart-open" : ""
 				}`}
+				suppressHydrationWarning={true}
 			>
 				<button
 					type="button"
@@ -97,6 +127,7 @@ const Cart = ({ hideButton }: CartProps) => {
 				className="fixed w-20 h-20 top-5 right-2 bg-orange-300 text-white active:bg-orange-500 px-6 py-3 rounded-full shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 md:hidden"
 				type="button"
 				onClick={() => setCartOpen(true)}
+				suppressHydrationWarning={true}
 			>
 				{order.products.length > 0 && (
 					<div className="absolute bg-red-500 rounded-full w-8 h-8 justify-center items-center right-0 -top-1 flex">

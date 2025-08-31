@@ -5,6 +5,12 @@ import { CartContext } from "../../providers/CartProvider"; // Context for manag
 const ItemRow = ({ product }) => {
 	const { cart, setCart } = useContext(CartContext);
 	const [mounted, setMounted] = useState(false);
+
+	// --- Note field name changes for Supabase ---
+	// product.price is still product.price
+	// product.priceUnit is now product.price_unit
+	// product.lowStock is now product.low_stock
+
 	// --- Static Base Price Info (Used for display & stored 'price') ---
 	const displayPrice = product.price ? Number.parseFloat(product.price) : Number.parseFloat(product.price_unit || 0);
 	const displayUnitLabel = product.price ? "kg" : "unidade";
@@ -164,6 +170,7 @@ const ItemRow = ({ product }) => {
 			className="grid border-b border-zinc-100 grid-cols-5 md:grid-cols-5 py-3 md:py-2 font-body"
 			role="rowgroup"
 			onSubmit={handleAddToCart}
+			suppressHydrationWarning={true}
 		>
 			{/* Column 1: Product Name & Description */}
 			<div className="col-span-4 md:col-span-2 flex flex-col mb-2 md:mb-0" role="cell">
