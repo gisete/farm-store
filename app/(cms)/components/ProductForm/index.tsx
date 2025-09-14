@@ -9,7 +9,7 @@ type FormValuesType = {
 	unit: string;
 	priceUnit: number;
 	lowStock: boolean;
-	isProductActive: boolean;
+	is_active: boolean;
 	slug: string;
 	position: number;
 	category: string;
@@ -136,13 +136,13 @@ export default function ProductForm({
 					</label>
 					<input
 						className=""
-						id="isProductActive"
+						id="is_active"
 						type="checkbox"
-						name="isProductActive"
+						name="is_active"
 						onChange={handleFormChange}
-						checked={formValues.isProductActive}
+						checked={formValues.is_active}
 					/>
-					<label className="text-grey-darker pl-2" htmlFor="isProductActive">
+					<label className="text-grey-darker pl-2" htmlFor="is_active">
 						Active
 					</label>
 				</div>

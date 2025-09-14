@@ -30,7 +30,24 @@ export async function signOut() {
 
 export async function createProduct(productData: any) {
 	const supabase = await createClient();
-	const { data, error } = await supabase.from("products").insert([productData]).select();
+
+	// Map the form field names to database column names
+	const mappedData = {
+		name: productData.name,
+		description: productData.description,
+		category: productData.category,
+		price: productData.price,
+		unit: productData.unit,
+		price_unit: productData.price_unit, // Form sends price_unit
+		is_active: productData.is_active, // Form sends is_active
+		low_stock: productData.low_stock, // Form sends low_stock
+		has_kg: productData.has_kg, // Form sends has_kg
+		has_un: productData.has_un, // Form sends has_un
+		slug: productData.slug,
+		position: productData.position,
+	};
+
+	const { data, error } = await supabase.from("products").insert([mappedData]).select();
 
 	if (error) {
 		console.error("Error creating product:", error);
@@ -50,11 +67,11 @@ export async function updateProduct(productData: any) {
 			description: productData.description,
 			category: productData.category,
 			price: productData.price,
-			price_unit: productData.priceUnit,
-			is_active: productData.isProductActive,
-			low_stock: productData.lowStock,
-			has_kg: productData.hasKg,
-			has_un: productData.hasUn,
+			price_unit: productData.price_unit, // Changed from priceUnit
+			is_active: productData.is_active, // Changed from isProductActive
+			low_stock: productData.low_stock, // Changed from lowStock
+			has_kg: productData.has_kg, // Changed from hasKg
+			has_un: productData.has_un, // Changed from hasUn
 		})
 		.eq("id", productData.id);
 

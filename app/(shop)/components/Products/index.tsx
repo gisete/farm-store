@@ -26,7 +26,7 @@ const Products = ({ products }: ProductsProps) => {
 			<div className="flex flex-col" role="table">
 				{products &&
 					products
-						// NOTE: Field name change from isProductActive to is_active
+						// NOTE: Field name change from is_active to is_active
 						.filter((product) => product.is_active && product.category !== "Parceiros")
 						.map((product, index) => <ItemRow key={`prod-${index}`} product={product} />)}
 			</div>
@@ -35,7 +35,7 @@ const Products = ({ products }: ProductsProps) => {
 			<div className="flex flex-col" role="table">
 				{products &&
 					products
-						// NOTE: Field name change from isProductActive to is_active
+						// NOTE: Field name change from is_active to is_active
 						.filter((product) => product.is_active && product.category === "Parceiros")
 						.map((product, index) => <ItemRow key={`prod-${index}`} product={product} />)}
 			</div>
