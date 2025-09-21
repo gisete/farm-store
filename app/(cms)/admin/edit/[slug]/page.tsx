@@ -31,7 +31,8 @@ async function getProductAndCategories(slug: string) {
 }
 
 export default async function GetProductBySlug({ params }: { params: { slug: string } }) {
-	const { product, categories } = await getProductAndCategories(params.slug);
+	const { slug } = await params;
+	const { product, categories } = await getProductAndCategories(slug);
 
 	return <EditProduct product={product} categories={categories} />;
 }

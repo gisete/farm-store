@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { updateProduct } from "@/lib/supabase/actions";
 import ProductForm from "../../../components/ProductForm";
 
-export default function EditProduct({ product, categoryData }) {
+export default function EditProduct({ product, categories }) {
 	const [formValues, setFormValues] = useState(product);
 	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
@@ -53,7 +53,7 @@ export default function EditProduct({ product, categoryData }) {
 				setFormValues={setFormValues}
 				handleFormChange={handleFormChange}
 				handleFormSubmit={handleFormSubmit}
-				categoryData={categoryData}
+				categoryData={categories}
 				isLoading={isLoading}
 			/>
 		</section>
