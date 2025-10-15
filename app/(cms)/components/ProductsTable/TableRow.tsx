@@ -11,7 +11,9 @@ const EditablePrice = ({ initialValue, onSave, fieldName }) => {
 
 	const handleSave = async () => {
 		setIsEditing(false);
-		const numericValue = Number.parseFloat(value);
+		// Convert comma to period for decimal separator
+		const normalizedValue = value.replace(",", ".");
+		const numericValue = Number.parseFloat(normalizedValue);
 
 		// Check if the new value is a valid number and different from the initial value
 		if (!isNaN(numericValue) && numericValue !== initialValue) {
@@ -39,7 +41,8 @@ const EditablePrice = ({ initialValue, onSave, fieldName }) => {
 		<div className="min-w-[100px] text-left">
 			{isEditing ? (
 				<input
-					type="number"
+					type="text"
+					inputMode="decimal"
 					value={value}
 					onChange={(e) => setValue(e.target.value)}
 					onBlur={handleSave}

@@ -15,7 +15,7 @@ export default function EditProduct({ product, categories }) {
 		const { type, id, value, checked, files } = e.target;
 		if (type === "checkbox") return checked;
 		if (type === "file") return files[0];
-		if (id === "price" || id === "priceUnit") return parseFloat(value) || 0;
+		// For price fields, keep as string to allow comma input
 		return value;
 	};
 
@@ -29,7 +29,20 @@ export default function EditProduct({ product, categories }) {
 		e.preventDefault();
 		setIsLoading(true);
 		try {
-			await updateProduct(formValues);
+			// Map camelCase form values to snake_case database fields
+			// Convert comma to period for decimal separator and parse to number
+			const normalizePrice = (value: any) => {
+				const normalized = String(value).replace(",", ".");
+				return parseFloat(normalized) || 0;
+			};
+
+			const productData = {
+				...formValues,
+				price: normalizePrice(formValues.price),
+				price_unit: normalizePrice(formValues.priceUnit),
+				low_stock: formValues.lowStock,
+			};
+			await updateProduct(productData);
 			toast.success("Product updated successfully!");
 			setTimeout(() => {
 				router.push("/admin");

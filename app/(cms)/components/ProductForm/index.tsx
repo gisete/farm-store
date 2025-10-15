@@ -5,9 +5,9 @@ import type React from "react";
 type FormValuesType = {
 	name: string;
 	description: string;
-	price: number;
+	price: number | string;
 	unit: string;
-	priceUnit: number;
+	priceUnit: number | string;
 	lowStock: boolean;
 	is_active: boolean;
 	slug: string;

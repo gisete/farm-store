@@ -12,11 +12,11 @@ export default function AddProductClient({ categoryData, productsLength }) {
 	const initialFormValues = {
 		name: "",
 		description: "",
-		price: 0,
+		price: "",
 		unit: "kg",
 		has_kg: true,
 		has_un: false,
-		priceUnit: 0,
+		priceUnit: "",
 		lowStock: false,
 		is_active: true,
 		slug: "",
@@ -31,7 +31,7 @@ export default function AddProductClient({ categoryData, productsLength }) {
 		const { type, id, value, checked, files } = e.target;
 		if (type === "checkbox") return checked;
 		if (type === "file") return files[0];
-		if (id === "price" || id === "priceUnit") return parseFloat(value) || 0;
+		// For price fields, keep as string to allow comma input
 		return value;
 	};
 
@@ -61,7 +61,20 @@ export default function AddProductClient({ categoryData, productsLength }) {
 		setIsLoading(true);
 
 		try {
-			await createProduct(formValues);
+			// Map camelCase form values to snake_case database fields
+			// Convert comma to period for decimal separator and parse to number
+			const normalizePrice = (value: any) => {
+				const normalized = String(value).replace(",", ".");
+				return parseFloat(normalized) || 0;
+			};
+
+			const productData = {
+				...formValues,
+				price: normalizePrice(formValues.price),
+				price_unit: normalizePrice(formValues.priceUnit),
+				low_stock: formValues.lowStock,
+			};
+			await createProduct(productData);
 			toast.success("Product added successfully!");
 			setTimeout(() => {
 				router.push("/admin");
