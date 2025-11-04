@@ -1,25 +1,29 @@
 "use client";
 
-import { type FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
+import { type FormEvent, useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { signIn } from "@/lib/supabase/actions";
 
 const Login = () => {
-	const router = useRouter();
+	const searchParams = useSearchParams();
 	const [error, setError] = useState<string | null>(null);
+
+	// Display error message from URL query parameter (if login failed)
+	useEffect(() => {
+		const message = searchParams.get("message");
+		if (message) {
+			setError(decodeURIComponent(message));
+		}
+	}, [searchParams]);
 
 	async function handleSubmit(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 		setError(null);
 		const formData = new FormData(event.currentTarget);
 
-		try {
-			await signIn(formData);
-			router.push("/admin");
-		} catch (err) {
-			setError("Could not authenticate user. Please check your credentials.");
-			console.log(err);
-		}
+		// Server Action will handle redirect on success or failure
+		// No need for try/catch - redirect() throws a special error that Next.js handles
+		await signIn(formData);
 	}
 
 	return (

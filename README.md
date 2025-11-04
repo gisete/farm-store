@@ -1,34 +1,63 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Farm Store - Local Produce E-Commerce Platform
 
-## Getting Started
+> Full-stack e-commerce platform for a local farm/store to sell fresh produce directly to customers through online ordering, including an admin panel for product and order management.
 
-First, run the development server:
+[![Next.js](https://img.shields.io/badge/Next.js-15.5.2-black?style=flat&logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-18-blue?style=flat&logo=react)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.1-blue?style=flat&logo=typescript)](https://www.typescriptlang.org/)
+[![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-green?style=flat&logo=supabase)](https://supabase.com/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.3-38bdf8?style=flat&logo=tailwind-css)](https://tailwindcss.com/)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+## Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Customer Shop (`/mercado`)
+- Product catalog with dual-unit pricing (kg/unit)
+- Shopping cart with localStorage persistence
+- Low stock indicators
+- Category filtering
+- Mobile-responsive design
+- Order submission via contact form
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Admin Panel (`/admin`)
+- Product & category management (CRUD)
+- Stock tracking & price management
+- In-line editing
+- Secure authentication
+- Order management
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Technology Stack
 
-## Learn More
+**Frontend**
+- Next.js 15.5.2 (App Router, Server Components, Server Actions)
+- React 18 with TypeScript
+- Tailwind CSS 3.3
+- SWR for data fetching
+- React Context for state management
 
-To learn more about Next.js, take a look at the following resources:
+**Backend**
+- Supabase (PostgreSQL + Authentication)
+- Next.js Server Actions
+- Row Level Security (RLS)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Running Locally
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-## Deploy on Vercel
+2. **Set up environment variables:**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   Copy `.env.example` to `.env.local` and add your Supabase credentials.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+3. **Run development server:**
+   ```bash
+   npm run dev
+   ```
+
+4. **Open [http://localhost:3000](http://localhost:3000)**
+
+**Available routes:**
+- `/mercado` - Customer shop
+- `/admin` - Admin dashboard
+- `/login` - Admin authentication

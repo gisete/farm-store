@@ -8,6 +8,12 @@ import { redirect } from "next/navigation";
 export async function signIn(formData: FormData) {
 	const email = formData.get("email") as string;
 	const password = formData.get("password") as string;
+
+	// Validate inputs
+	if (!email || !password) {
+		return redirect("/login?message=Email and password are required");
+	}
+
 	const supabase = await createClient();
 
 	const { error } = await supabase.auth.signInWithPassword({
@@ -16,9 +22,16 @@ export async function signIn(formData: FormData) {
 	});
 
 	if (error) {
-		return redirect("/login?message=Could not authenticate user");
+		// Log error for debugging (won't expose to user)
+		console.error("Login error:", error.message);
+
+		// Provide user-friendly error message
+		const message = encodeURIComponent("Invalid email or password");
+		return redirect(`/login?message=${message}`);
 	}
 
+	// Revalidate to ensure fresh data after login
+	revalidatePath("/admin");
 	return redirect("/admin");
 }
 

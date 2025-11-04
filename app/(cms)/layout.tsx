@@ -1,64 +1,35 @@
-"use client";
-
 import type React from "react";
-
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import CmsLayoutClient from "./CmsLayoutClient";
 import "../globals.css";
-import { useState, useEffect } from "react";
-import SidePanel from "./components/SidePanel";
-import LogoutButton from "./components/LogoutButton";
-import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
-import Notification from "./components/Notification";
 
-export default function CmsLayout({ children }: { children: React.ReactNode }) {
-	const [user, setUser] = useState(null);
-	const [loading, setLoading] = useState(true);
-	const [mounted, setMounted] = useState(false);
-	const router = useRouter();
+/**
+ * Server Component: Admin CMS Layout with Server-Side Authentication
+ *
+ * This layout protects all admin routes by checking authentication on the server
+ * before rendering any content. This prevents unauthorized access and provides
+ * better security than client-side only checks.
+ *
+ * Uses getUser() instead of getSession() to verify authentication with Supabase
+ * Auth server, ensuring the session is valid and not tampered with.
+ */
+export default async function CmsLayout({ children }: { children: React.ReactNode }) {
+	// Server-side authentication check
+	const supabase = await createClient();
 
-	useEffect(() => {
-		setMounted(true);
-		const checkSession = async () => {
-			const supabase = createClient();
-			const {
-				data: { session },
-			} = await supabase.auth.getSession();
+	// Use getUser() instead of getSession() for secure authentication verification
+	// This validates the session with Supabase Auth server
+	const {
+		data: { user },
+		error,
+	} = await supabase.auth.getUser();
 
-			if (session) {
-				setUser(session.user);
-			} else {
-				router.push("/login");
-			}
-			setLoading(false);
-		};
-
-		checkSession();
-	}, [router]);
-
-	if (!mounted) {
-		return null;
+	// Redirect to login if not authenticated (happens on server)
+	if (error || !user) {
+		redirect("/login");
 	}
 
-	if (loading) {
-		return <div className="flex h-screen items-center justify-center">Loading...</div>;
-	}
-
-	if (user) {
-		return (
-			<div className="bg-[#fbf8f3]">
-				<LogoutButton />
-				<div className="flex">
-					<aside className="w-64 min-h-lvh h-full">
-						<SidePanel />
-					</aside>
-					<main className="min-h-lvh h-full flex-1 pb-8 pr-8">
-						<Notification />
-						<div className="bg-white min-h-full px-12 py-16">{children}</div>
-					</main>
-				</div>
-			</div>
-		);
-	}
-
-	return null;
+	// If authenticated, render the client layout
+	return <CmsLayoutClient>{children}</CmsLayoutClient>;
 }
