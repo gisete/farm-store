@@ -27,7 +27,7 @@ const ContactForm = () => {
 	const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const id = e.target.id;
 		const newValue = e.target.value;
-		setOrder({ ...order, [id]: newValue });
+		setOrder((prevOrder) => ({ ...prevOrder, [id]: newValue }));
 	};
 
 	async function handleSendOrder() {

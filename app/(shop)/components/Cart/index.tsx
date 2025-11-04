@@ -26,11 +26,11 @@ const Cart = ({ hideButton }: CartProps) => {
 	const handleCartUpdate = useCallback(() => {
 		if (!mounted) return;
 
-		setOrder({
-			...order,
+		setOrder((prevOrder) => ({
+			...prevOrder,
 			products: cart,
-		});
-	}, [mounted, cart, order, setOrder]);
+		}));
+	}, [mounted, cart, setOrder]);
 
 	useEffect(() => {
 		setMounted(true);
@@ -110,7 +110,7 @@ const Cart = ({ hideButton }: CartProps) => {
 										className="block w-full bg-grey-lighter text-grey-darker border border-grey-lighter rounded py-3 px-4 mb-3"
 										form="usrform"
 										id="comment"
-										onChange={(e) => setOrder({ ...order, comment: e.target.value })}
+										onChange={(e) => setOrder((prevOrder) => ({ ...prevOrder, comment: e.target.value }))}
 									></textarea>
 								</div>
 
