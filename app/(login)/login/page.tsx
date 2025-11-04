@@ -1,10 +1,10 @@
 "use client";
 
-import { type FormEvent, useState, useEffect } from "react";
+import { type FormEvent, useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { signIn } from "@/lib/supabase/actions";
 
-const Login = () => {
+function LoginForm() {
 	const searchParams = useSearchParams();
 	const [error, setError] = useState<string | null>(null);
 
@@ -64,6 +64,12 @@ const Login = () => {
 			</div>
 		</section>
 	);
-};
+}
 
-export default Login;
+export default function Login() {
+	return (
+		<Suspense fallback={<div className="min-h-screen bg-[#fbf8f3] flex items-center justify-center">Loading...</div>}>
+			<LoginForm />
+		</Suspense>
+	);
+}

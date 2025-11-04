@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { createClient } from "@lib/supabase/client";
 import { CartContext } from "../(shop)/providers/CartProvider";
 
-export default function () {
+export default function useSendOrder() {
 	const supabaseClient = createClient();
 	const { order } = useContext(CartContext);
 

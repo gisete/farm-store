@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useCallback } from "react";
 import { CartContext } from "../../providers/CartProvider";
 import CartItem from "./CartItem";
 import ContactForm from "../ContactForm";
@@ -23,14 +23,14 @@ const Cart = ({ hideButton }: CartProps) => {
 	const [mounted, setMounted] = useState(false);
 	const { cart, cartTotal, order, setOrder, isCartOpen, setCartOpen, hasError, orderSent } = useContext(CartContext);
 
-	const handleCartUpdate = () => {
+	const handleCartUpdate = useCallback(() => {
 		if (!mounted) return;
 
 		setOrder({
 			...order,
 			products: cart,
 		});
-	};
+	}, [mounted, cart, order, setOrder]);
 
 	useEffect(() => {
 		setMounted(true);
@@ -38,7 +38,7 @@ const Cart = ({ hideButton }: CartProps) => {
 
 	useEffect(() => {
 		handleCartUpdate();
-	}, [cart, mounted]);
+	}, [handleCartUpdate]);
 
 	if (!mounted) {
 		return (

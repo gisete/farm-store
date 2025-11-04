@@ -110,7 +110,7 @@ function CartProvider({ children }) {
 		if (JSON.stringify(order.products) !== JSON.stringify(cart)) {
 			setOrder((prevOrder) => ({ ...prevOrder, products: cart || [] }));
 		}
-	}, [cart]);
+	}, [cart, order.products]);
 
 	const value = {
 		cart,
