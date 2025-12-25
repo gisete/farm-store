@@ -1,7 +1,16 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Read(//Users/gisetekindahl/Projects/horta-serverless-functions/supabase/**)",
+      "Read(//Users/gisetekindahl/Projects/horta-serverless-functions/**)",
+      "Read(//Users/gisetekindahl/Projects/laara-app/**)",
+      "Read(//Users/gisetekindahl/Projects/sope-website/**)",
+      "Bash(npm audit:*)",
+      "Bash(npm install:*)",
+      "Bash(rm:*)",
+      "Bash(npx @next/codemod@canary next-lint-to-eslint-cli:*)",
+      "Bash(npm run lint)"
     ],
     "deny": [],
     "ask": []
